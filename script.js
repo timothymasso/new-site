@@ -114,4 +114,5 @@ document.querySelectorAll('.service-card').forEach(card => {
     observer.observe(card);
 });
 
-console.log('Website loaded successfully!');
+// Set current year in footer
+document.getElementById('year').textContent = new Date().getFullYear();
