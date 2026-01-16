@@ -33,7 +33,15 @@ body {
 }
 
 html {
-  scroll-behavior: smooth;
+  scroll-behavior: auto;
+}
+
+/* Optimize scroll performance */
+.overflow-y-auto {
+  -webkit-overflow-scrolling: touch;
+  will-change: scroll-position;
+  transform: translateZ(0);
+  backface-visibility: hidden;
 }
 
 #app-root {

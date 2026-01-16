@@ -95,7 +95,6 @@ export default function Navigation() {
   const navItems = [
     { id: 'home', label: 'Home', action: () => navigate('/') },
     { id: 'about', label: 'About', action: () => navigate('/about') },
-    { id: 'skills', label: 'Skills', action: () => scrollToSection('skills') },
     { id: 'portfolio', label: 'Work', action: () => navigate('/projects') },
     { id: 'contact', label: 'Contact', action: () => scrollToSection('contact') },
   ]

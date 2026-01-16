@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 
 const casualGreetings = [
   "Hey there!",
@@ -12,13 +12,27 @@ const casualGreetings = [
 export default function Hero() {
   const [greeting, setGreeting] = useState("Hello!")
   const [mousePos, setMousePos] = useState({ x: 0, y: 0 })
+  const rafRef = useRef(null)
+  const mousePosRef = useRef({ x: 0, y: 0 })
 
   useEffect(() => {
     const handleMouseMove = (e) => {
-      setMousePos({ x: e.clientX, y: e.clientY })
+      mousePosRef.current = { x: e.clientX, y: e.clientY }
+      
+      if (!rafRef.current) {
+        rafRef.current = requestAnimationFrame(() => {
+          setMousePos(mousePosRef.current)
+          rafRef.current = null
+        })
+      }
     }
-    window.addEventListener('mousemove', handleMouseMove)
-    return () => window.removeEventListener('mousemove', handleMouseMove)
+    window.addEventListener('mousemove', handleMouseMove, { passive: true })
+    return () => {
+      if (rafRef.current) {
+        cancelAnimationFrame(rafRef.current)
+      }
+      window.removeEventListener('mousemove', handleMouseMove)
+    }
   }, [])
 
   const handleGreetingClick = () => {

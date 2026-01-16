@@ -26,8 +26,8 @@ function Home() {
       <div className="pointer-events-auto">
         <Navigation />
       </div>
-      <div className="pointer-events-auto h-full pt-16 relative">
-        <div className="h-full grid grid-cols-12 grid-rows-6 gap-4 pl-6 pr-6 pt-6 pb-0 overflow-hidden" style={{ height: 'calc(100vh - 4rem)' }}>
+      <div className="pointer-events-auto h-full pt-8 relative">
+        <div className="h-full grid grid-cols-12 grid-rows-6 gap-4 pl-6 pr-6 pt-1 pb-0 overflow-hidden" style={{ height: 'calc(100vh - 4rem)' }}>
           <div className="col-span-12 md:col-span-4 row-span-3">
             <Hero />
           </div>

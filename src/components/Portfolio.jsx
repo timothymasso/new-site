@@ -166,7 +166,7 @@ export default function Portfolio() {
           {filteredWork.length} {filteredWork.length === 1 ? 'thing' : 'things'} found
         </p>
       </div>
-      <div className="grid grid-cols-2 md:grid-cols-3 gap-3 md:gap-4 overflow-y-auto max-h-[calc(100%-120px)]">
+      <div className="grid grid-cols-2 md:grid-cols-3 gap-3 md:gap-4 overflow-y-auto max-h-[calc(100%-120px)]" style={{ WebkitOverflowScrolling: 'touch', willChange: 'scroll-position' }}>
         {filteredWork.map((item, index) => (
           <WorkCard key={index} item={item} index={index} />
         ))}
