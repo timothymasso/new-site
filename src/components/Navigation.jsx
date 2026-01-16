@@ -103,8 +103,8 @@ export default function Navigation() {
     <nav className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
       scrolled ? 'bg-black/40 backdrop-blur-lg border-b border-white/20' : 'bg-transparent'
     }`}>
-      <div className="max-w-7xl mx-auto px-6 py-4">
-        <div className="flex items-center justify-between">
+      <div className="w-full px-6 py-4">
+        <div className="flex items-center justify-end">
           <div className="flex items-center space-x-6 text-sm text-white font-light">
             {navItems.map((item) => (
               <button
@@ -124,9 +124,7 @@ export default function Navigation() {
                 )}
               </button>
             ))}
-          </div>
-          <div className="flex items-center space-x-6">
-            <div className="text-xs text-white/80 font-light">
+            <div className="text-xs text-white/80 font-light ml-6">
               {formatTime(currentTime)}
             </div>
           </div>

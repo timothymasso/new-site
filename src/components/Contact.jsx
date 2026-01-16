@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react'
+import VariableProximity from './VariableProximity'
 
 const casualMessages = [
   "Let's make something cool together",
@@ -8,7 +9,7 @@ const casualMessages = [
   "Let's connect!",
 ]
 
-export default function Contact() {
+export default function Contact({ containerRef }) {
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -43,19 +44,21 @@ export default function Contact() {
   return (
     <section id="contact" className="h-full px-4 pt-4 pb-0 flex flex-col">
       <h2 className="text-2xl md:text-3xl font-light text-white mb-4">
-        Say hi
+        <VariableProximity label="Say hi" containerRef={containerRef} radius={90} falloff="gaussian" className="text-2xl md:text-3xl font-light text-white" />
       </h2>
       <p className="text-sm text-white/60 mb-4 animate-fade-in">
-        {casualMessages[messageIndex]}
+        <VariableProximity label={casualMessages[messageIndex]} containerRef={containerRef} radius={90} falloff="gaussian" className="text-sm text-white/60" />
       </p>
       <div className="space-y-2 mb-4">
         <a 
           href="mailto:timothy.masso@gmail.com" 
           className="text-white/70 hover:text-white transition-colors font-light text-sm block hover:translate-x-1 transition-transform"
         >
-          timothy.masso@gmail.com
+          <VariableProximity label="timothy.masso@gmail.com" containerRef={containerRef} radius={90} falloff="gaussian" className="text-sm font-light" />
         </a>
-        <p className="text-white/50 font-light text-xs">NYC area</p>
+        <p className="text-white/50 font-light text-xs">
+          <VariableProximity label="NYC area" containerRef={containerRef} radius={90} falloff="gaussian" className="text-xs text-white/50 font-light" />
+        </p>
       </div>
       <form onSubmit={handleSubmit} className="space-y-2">
         <input
@@ -91,7 +94,7 @@ export default function Contact() {
             submitted ? 'bg-green-500 text-white' : ''
           }`}
         >
-          {submitted ? '✓ Sent!' : 'Send it'}
+          <VariableProximity label={submitted ? '✓ Sent!' : 'Send it'} containerRef={containerRef} radius={90} falloff="gaussian" className="text-sm font-light" />
         </button>
       </form>
     </section>

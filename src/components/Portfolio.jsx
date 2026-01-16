@@ -1,5 +1,6 @@
 import React, { useState } from 'react'
 import WorkCard from './WorkCard'
+import VariableProximity from './VariableProximity'
 
 // Helper function to get YouTube thumbnail with fallback
 const getYouTubeThumbnail = (videoId) => {
@@ -124,7 +125,7 @@ const workWithThumbnails = allWork.map(item => ({
 
 const categories = ['All', 'Performance', 'Data Project', 'Code']
 
-export default function Portfolio() {
+export default function Portfolio({ containerRef }) {
   const [selectedCategory, setSelectedCategory] = useState('All')
   const [hoveredCategory, setHoveredCategory] = useState(null)
 
@@ -136,7 +137,7 @@ export default function Portfolio() {
     <section id="portfolio" className="h-full px-4 py-4">
       <div className="mb-4">
         <h2 className="text-2xl md:text-3xl font-light text-white mb-3">
-          Some stuff I made
+          <VariableProximity label="Some stuff I made" containerRef={containerRef} radius={90} falloff="gaussian" className="text-2xl md:text-3xl font-light text-white" />
         </h2>
         <div className="flex flex-wrap gap-2 mb-4">
           {categories.map((category) => (
@@ -158,17 +159,29 @@ export default function Portfolio() {
                 fontFamily: category === 'Code' ? 'ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, "Liberation Mono", monospace' : 'inherit'
               }}
             >
-              {category === 'Code' ? '<> Code' : category}
+              <VariableProximity 
+                label={category === 'Code' ? '<> Code' : category} 
+                containerRef={containerRef} 
+                radius={90} 
+                falloff="gaussian" 
+                className="text-xs md:text-sm font-light"
+              />
             </button>
           ))}
         </div>
         <p className="text-xs text-white/40 mb-2">
-          {filteredWork.length} {filteredWork.length === 1 ? 'thing' : 'things'} found
+          <VariableProximity 
+            label={`${filteredWork.length} ${filteredWork.length === 1 ? 'thing' : 'things'} found`} 
+            containerRef={containerRef} 
+            radius={90} 
+            falloff="gaussian" 
+            className="text-xs text-white/40"
+          />
         </p>
       </div>
       <div className="grid grid-cols-2 md:grid-cols-3 gap-3 md:gap-4 overflow-y-auto max-h-[calc(100%-120px)]" style={{ WebkitOverflowScrolling: 'touch', willChange: 'scroll-position' }}>
         {filteredWork.map((item, index) => (
-          <WorkCard key={index} item={item} index={index} />
+          <WorkCard key={index} item={item} index={index} containerRef={containerRef} />
         ))}
       </div>
     </section>

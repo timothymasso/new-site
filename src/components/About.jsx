@@ -1,5 +1,6 @@
 import React, { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
+import VariableProximity from './VariableProximity'
 
 const funFacts = [
   "I once wrote a song about a bug in my code",
@@ -9,7 +10,7 @@ const funFacts = [
   "I have strong opinions about semicolons",
 ]
 
-export default function About() {
+export default function About({ containerRef }) {
   const [currentFact, setCurrentFact] = useState(0)
   const navigate = useNavigate()
 
@@ -23,22 +24,16 @@ export default function About() {
   }
 
   return (
-    <section id="about" className="h-full px-4 pt-4 pb-0 relative overflow-hidden flex flex-col">
+    <section id="about" className="h-full px-3 pt-3 pb-3 relative overflow-hidden flex flex-col" style={{ minHeight: 0 }}>
       <h2 
-        className="text-2xl md:text-3xl font-light text-white mb-4 cursor-pointer hover:text-white/80 transition-colors"
+        className="text-xl md:text-2xl font-light text-white mb-2 cursor-pointer hover:text-white/80 transition-colors"
         onClick={handleTitleClick}
       >
-        About me
+        <VariableProximity label="About me" containerRef={containerRef} radius={90} falloff="gaussian" className="text-xl md:text-2xl font-light text-white" />
       </h2>
-      <div className="space-y-3 text-sm md:text-base text-white/80 font-light leading-relaxed">
+      <div className="text-xs md:text-sm text-white/80 font-light leading-relaxed">
         <p>
-          I'm a musician who got into coding, or maybe a coder who got into music? Either way, I like making cool stuff.
-        </p>
-        <p className="text-white/60 italic">
-          {funFacts[currentFact]}
-        </p>
-        <p className="text-xs text-white/40 mt-4">
-          (click the title to read more)
+          <VariableProximity label="I'm a musician who got into coding, or maybe a coder who got into music? Either way, I like making cool stuff." containerRef={containerRef} radius={60} falloff="gaussian" className="text-xs md:text-sm text-white/80 font-light" />
         </p>
       </div>
     </section>

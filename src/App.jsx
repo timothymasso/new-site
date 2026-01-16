@@ -1,11 +1,11 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useRef } from 'react'
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import Navigation from './components/Navigation'
 import Hero from './components/Hero'
 import About from './components/About'
-import Skills from './components/Skills'
 import Portfolio from './components/Portfolio'
 import Contact from './components/Contact'
+import SocialLinks from './components/SocialLinks'
 import Footer from './components/Footer'
 import ScrollProgress from './components/ScrollProgress'
 import ProjectPage from './components/ProjectPage'
@@ -14,6 +14,8 @@ import ProjectsPage from './components/ProjectsPage'
 import ContactPage from './components/ContactPage'
 
 function Home() {
+  const containerRef = useRef(null)
+
   useEffect(() => {
     document.body.classList.add('no-scroll')
     return () => {
@@ -22,26 +24,29 @@ function Home() {
   }, [])
 
   return (
-    <div className="relative z-10 pointer-events-none h-screen overflow-hidden">
+    <div className="relative z-10 pointer-events-none h-screen overflow-hidden" ref={containerRef}>
       <div className="pointer-events-auto">
         <Navigation />
       </div>
       <div className="pointer-events-auto h-full pt-8 relative">
-        <div className="h-full grid grid-cols-12 grid-rows-6 gap-4 pl-6 pr-6 pt-1 pb-0 overflow-hidden" style={{ height: 'calc(100vh - 4rem)' }}>
-          <div className="col-span-12 md:col-span-4 row-span-3">
-            <Hero />
+        <div className="h-full grid grid-cols-12 gap-[min(1rem,2vw)] pl-[min(1.5rem,3vw)] pr-[min(1.5rem,3vw)] pt-[min(1rem,2vh)] pb-0 overflow-hidden" style={{ 
+          height: 'calc(100vh - 4rem)',
+          gridTemplateRows: 'repeat(6, minmax(0, 1fr))'
+        }}>
+          <div className="col-span-12 md:col-span-4 row-start-1 row-span-2 border border-white/30 flex items-start self-start" style={{ minHeight: 0, height: 'auto' }}>
+            <Hero containerRef={containerRef} />
           </div>
-          <div className="col-span-12 md:col-span-8 row-span-4 overflow-y-auto">
-            <Portfolio />
+          <div className="col-span-12 md:col-span-8 row-start-1 row-span-6 overflow-y-auto border border-white/30" style={{ minHeight: 0 }}>
+            <Portfolio containerRef={containerRef} />
           </div>
-          <div className="col-span-12 md:col-span-4 row-span-2 overflow-y-auto pb-0" style={{ marginBottom: 0, paddingBottom: 0 }}>
-            <About />
+          <div className="col-span-12 md:col-span-4 row-start-4 row-span-1 overflow-hidden pb-0 border border-white/30" style={{ marginBottom: 0, paddingBottom: 0, minHeight: 0 }}>
+            <About containerRef={containerRef} />
           </div>
-          <div className="col-span-12 md:col-span-4 row-span-2 overflow-y-auto pb-0" style={{ marginBottom: 0, paddingBottom: 0 }}>
-            <Skills />
+          <div className="col-span-12 md:col-span-2 row-start-5 row-span-2 overflow-y-auto pb-0 border border-white/30" style={{ marginBottom: 0, paddingBottom: 0 }}>
+            <Contact containerRef={containerRef} />
           </div>
-          <div className="col-span-12 md:col-span-4 row-span-2 overflow-y-auto pb-0 border-l border-white/10" style={{ marginBottom: 0, paddingBottom: 0 }}>
-            <Contact />
+          <div className="col-span-12 md:col-span-2 row-start-5 row-span-2 overflow-y-auto pb-0 border border-white/30" style={{ marginBottom: 0, paddingBottom: 0 }}>
+            <SocialLinks containerRef={containerRef} />
           </div>
         </div>
         <Footer />

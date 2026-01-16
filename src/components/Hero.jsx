@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react'
+import VariableProximity from './VariableProximity'
 
 const casualGreetings = [
   "Hey there!",
@@ -9,7 +10,7 @@ const casualGreetings = [
   "Hey!",
 ]
 
-export default function Hero() {
+export default function Hero({ containerRef }) {
   const [greeting, setGreeting] = useState("Hello!")
   const [mousePos, setMousePos] = useState({ x: 0, y: 0 })
   const rafRef = useRef(null)
@@ -41,25 +42,34 @@ export default function Hero() {
   }
 
   return (
-    <section id="home" className="h-full flex items-center justify-center px-4 relative">
-      <div className="w-full">
+    <section id="home" className="flex items-start justify-start px-3 pt-3 pb-3 relative">
+      <div className="w-full flex flex-col justify-start">
         <h1 
           className="text-5xl md:text-6xl lg:text-7xl font-light text-white leading-[1.1] tracking-tight cursor-pointer transition-transform hover:scale-105"
           onClick={handleGreetingClick}
         >
-          {greeting}<br />
-          I'm Timothy.
+          <VariableProximity label={greeting} containerRef={containerRef} radius={90} falloff="gaussian" className="text-5xl md:text-6xl lg:text-7xl font-light text-white" />
+          <br />
+          <VariableProximity label="I'm Timothy." containerRef={containerRef} radius={90} falloff="gaussian" className="text-5xl md:text-6xl lg:text-7xl font-light text-white" />
         </h1>
-        <p className="text-lg md:text-xl text-white/70 font-light mt-4">
-          I make sounds, code stuff, and sometimes both at the same time 🎵
+        <p className="text-lg md:text-xl text-white/70 font-light mt-2">
+          <VariableProximity label="I make sounds, code stuff, and sometimes both at the same time" containerRef={containerRef} radius={90} falloff="gaussian" className="text-lg md:text-xl text-white/70 font-light" />
         </p>
-        <div className="mt-6 flex gap-3 flex-wrap">
-          <span className="text-sm text-white/50 font-light">currently:</span>
-          <span className="text-sm text-white/70 font-light animate-pulse">making music</span>
+        <div className="mt-3 flex gap-3 flex-wrap">
+          <span className="text-sm text-white/50 font-light">
+            <VariableProximity label="currently:" containerRef={containerRef} radius={90} falloff="gaussian" className="text-sm text-white/50 font-light" />
+          </span>
+          <span className="text-sm text-white/70 font-light animate-pulse">
+            <VariableProximity label="making music" containerRef={containerRef} radius={90} falloff="gaussian" className="text-sm text-white/70 font-light" />
+          </span>
           <span className="text-sm text-white/50 font-light">•</span>
-          <span className="text-sm text-white/70 font-light animate-pulse" style={{ animationDelay: '1s' }}>coding things</span>
+          <span className="text-sm text-white/70 font-light animate-pulse" style={{ animationDelay: '1s' }}>
+            <VariableProximity label="coding things" containerRef={containerRef} radius={90} falloff="gaussian" className="text-sm text-white/70 font-light" />
+          </span>
           <span className="text-sm text-white/50 font-light">•</span>
-          <span className="text-sm text-white/70 font-light animate-pulse" style={{ animationDelay: '2s' }}>vibing</span>
+          <span className="text-sm text-white/70 font-light animate-pulse" style={{ animationDelay: '2s' }}>
+            <VariableProximity label="vibing" containerRef={containerRef} radius={90} falloff="gaussian" className="text-sm text-white/70 font-light" />
+          </span>
         </div>
       </div>
       <div 

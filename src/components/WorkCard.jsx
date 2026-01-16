@@ -1,7 +1,8 @@
 import React, { useState } from 'react'
 import { Link } from 'react-router-dom'
+import VariableProximity from './VariableProximity'
 
-export default function WorkCard({ item, index }) {
+export default function WorkCard({ item, index, containerRef }) {
   const [isHovered, setIsHovered] = useState(false)
   const [imageError, setImageError] = useState(false)
 
@@ -47,10 +48,10 @@ export default function WorkCard({ item, index }) {
       </div>
       <div>
         <h3 className="text-xs md:text-sm font-light text-white mb-1 transition-colors group-hover:text-white/80">
-          {item.title}
+          <VariableProximity label={item.title} containerRef={containerRef} radius={90} falloff="gaussian" className="text-xs md:text-sm font-light text-white" />
         </h3>
         <p className="text-xs text-white/60 font-light">
-          {item.category}'{item.year.toString().slice(-2)}
+          <VariableProximity label={`${item.category}'${item.year.toString().slice(-2)}`} containerRef={containerRef} radius={90} falloff="gaussian" className="text-xs text-white/60 font-light" />
         </p>
       </div>
       {isHovered && (
