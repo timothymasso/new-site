@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <title>Timothy Masso</title><!-- Begin Jekyll SEO tag v2.8.0 -->
+<meta name="generator" content="Jekyll v3.10.0" />
+<meta property="og:title" content="Timothy Masso" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="Timothy Masso’s website" />
+<meta property="og:description" content="Timothy Masso’s website" />
+<link rel="canonical" href="http://localhost:4000/indexgood.txt" />
+<meta property="og:url" content="http://localhost:4000/indexgood.txt" />
+<meta property="og:site_name" content="Timothy Masso" />
+<meta property="og:type" content="website" />
+<meta name="twitter:card" content="summary" />
+<meta property="twitter:title" content="Timothy Masso" />
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"WebPage","description":"Timothy Masso’s website","headline":"Timothy Masso","url":"http://localhost:4000/indexgood.txt"}</script>
+<!-- End Jekyll SEO tag -->
+<link type="application/atom+xml" rel="alternate" href="http://localhost:4000/feed.xml" title="Timothy Masso" /><link rel="shortcut icon" type="image/x-icon" href="/assets/favicon.png" />
+  <link rel="stylesheet" href="/assets/css/main.css" />
+</head><body a="auto">
+    <main class="page-content" aria-label="Content">
+      <div class="w">
+        <header>
+  <h1>Timothy Masso</h1></header><ul><li>info</li><ul><li>sonic architect and computer guy</li><li><a href="/_aboutme/aboutme/">about me (under construction)</a></li><li>timothy.masso@gmail.com</li><li><a href="https://github.com/timothymasso">gitHub</a></li><li><a href="https://www.instagram.com/timmasso_/">instagram</a></li><li><a href="https://www.cosmos.so/timothymasso">cosmos (where I put some photos and cool stuff)</a></li><li>this is a site of everything me, as of 12/15/2025</li></ul></ul><link rel="shortcut icon" href="/assets/favicon.ico" type="image/x-icon">
+<link rel="icon" href="/assets/favicon.ico" type="image/x-icon">
+
+<h2>Performances</h2>
+<ul>
+  
+  
+    <li class="category">
+      New School
+      <ul>
+        
+        
+          <li class="year">
+            2024
+            <ul>
+              
+              
+                <li><a href="/_performances/new-school-recital/">New School Degree Recital</a></li>
+              
+                <li><a href="/_performances/Radio-Head-Ensemble/">Radiohead Ensemble (under construction)</a></li>
+              
+            </ul>
+          </li>
+        
+          <li class="year">
+            2023
+            <ul>
+              
+              
+                <li><a href="/_performances/improv_ensemble_fall23/">Improv Ensemble Fall 2023</a></li>
+              
+                <li><a href="/_performances/mingus/">Charles Mingus Ensemble</a></li>
+              
+            </ul>
+          </li>
+        
+          <li class="year">
+            2022
+            <ul>
+              
+              
+                <li><a href="/_performances/steelydan/">Steely Dan Ensemble</a></li>
+              
+                <li><a href="/_performances/juliushemphil/">Julius Hemphil Ensemble</a></li>
+              
+                <li><a href="/_performances/afrocuban/">Afro Cuban Ensemble</a></li>
+              
+            </ul>
+          </li>
+        
+          <li class="year">
+            2021
+            <ul>
+              
+              
+                <li><a href="/_performances/kdream/">New School Studio Orchestra: The Kennedy Dream</a></li>
+              
+                <li><a href="/_performances/unsilent/">Unsilent Film Project</a></li>
+              
+            </ul>
+          </li>
+        
+      </ul>
+    </li>
+  
+</ul>
+
+
+
+
+
+
+
+
+
+
+
+<h2>Data Projects</h2>
+<ul>
+  
+    <li class="category">
+      Tri-C Post Degree Cert Classes
+      <ul>
+        
+        
+          <li class="year">
+            2025
+            <ul>
+              
+              
+                <li><a href="/_dataprojects/calcproject/">Honors Calculus Project</a></li>
+              
+                <li><a href="/_dataprojects/proglogic/">IT1050 Programming Logic</a></li>
+              
+                <li><a href="/_dataprojects/statsone/">Notes From Stats 1 (under construction)</a></li>
+              
+            </ul>
+          </li>
+        
+      </ul>
+    </li>
+  
+    <li class="category">
+      New School Class
+      <ul>
+        
+        
+          <li class="year">
+            2024
+            <ul>
+              
+              
+                <li><a href="/_dataprojects/internetgeo/">Internet Geographies Project</a></li>
+              
+            </ul>
+          </li>
+        
+      </ul>
+    </li>
+  
+</ul>
+
+<!-- <h2>Photos</h2>
+<div class="photos-section">
+  <ul>
+    
+    
+  </ul>
+</div> -->
+
+<!-- Scroll track and bar -->
+<div id="scrollTrack"></div>
+<div id="verticalScrollProgress"></div>
+
+<!-- Scroll hint -->
+<!-- Uncomment if you want visible scroll hints -->
+<!--
+<div id="scrollHint">▼ Scroll ▼</div>
+<div id="scrollHintBottom">▼ Scroll ▼</div>
+-->
+
+<style>
+/* Scroll track (full height) */
+#scrollTrack {
+  position: fixed;
+  top: 25%;             /* start 25% from top of page */
+  left: 50%;
+  transform: translateX(-700px);
+  width: 5px;
+  height: 50%;          /* cover middle 50% of the page */
+  background-color: rgba(255, 255, 255, 0.1);
+  z-index: 9998;
+}
+
+#verticalScrollProgress {
+  position: fixed;
+  top: 25%;             /* match track start */
+  left: 50%;
+  transform: translateX(-700px);
+  width: 5px;
+  height: 0%;           /* grows as you scroll */
+  background-color: #5bff32;
+  z-index: 9999;
+}
+
+/* Scroll hints */
+#scrollHint {
+  position: fixed;
+  top: 21%;             /* same top as track */
+  left: 50%;
+  transform: translateX(-700px); /* slightly left of the bar */
+  color: #5bff32;
+  font-family: monospace;
+  font-size: 0.8em;
+  z-index: 10000;
+}
+#scrollHintBottom {
+  position: fixed;
+  top: calc(27% + 50%); /* start top + track height */
+  left: 50%;
+  transform: translateX(-700px); /* same as top hint */
+  color: #5bff32;
+  font-family: monospace;
+  font-size: 0.8em;
+  z-index: 10000;
+}
+
+/* Pulse animation */
+@keyframes pulse {
+  0% { opacity: 0.5; }
+  50% { opacity: 1; }
+  100% { opacity: 0.5; }
+}
+
+/* Page base styling */
+body {
+  color: white;
+  font-family: monospace;
+  font-size: 1rem;
+  line-height: 1.4;
+  margin: 0;
+  min-height: 100%;
+  overflow-wrap: break-word;
+  background-image: url('/assets/darkbgcolor.jpg'); 
+  background-size: cover; 
+  background-position: center; 
+  background-attachment: fixed; 
+  text-align: center;  /* centers top-level lists */
+}
+
+/* Center top-level lists while keeping bullets/indentation */
+ul {
+  display: inline-block;
+  text-align: left;
+  margin: 0 auto;        /* remove vertical margin */
+  padding-left: 1.5em;
+  list-style-position: outside;
+}
+
+/* Remove extra gap between headings and lists */
+h2 + ul {
+  margin-top: 0;
+}
+
+/* Nested lists preserve indentation and hierarchy */
+ul ul, ul ul ul {
+  display: block;
+  margin-left: 0;
+  padding-left: 1.2em;
+  position: relative;    /* fixes dash alignment for posts */
+}
+
+/* Headings slightly more indented, left-aligned */
+h2, h3 {
+  text-align: left;
+  padding-left: 4em;   
+  margin-top: 1em;
+  margin-bottom: 0.2em;
+}
+
+h1 {
+  text-align: left;
+  padding-left: 3em;  /* only h1 is indented 3em */
+  margin-top: 1em;
+  margin-bottom: 0.2em;
+}
+
+/* Category level */
+.category {
+  font-size: 1.2rem;
+  font-weight: bold;
+  list-style-type: disc;
+  margin-top: 1em;  /* keep spacing between categories */
+}
+
+/* Remove top margin for the first category in each section */
+ul > .category:first-child {
+  margin-top: 0;
+}
+
+/* Extra space between Data Project categories */
+h2 + ul .category {
+  margin-top: 1.5em;
+}
+
+/* Year level */
+.year {
+  font-size: 1rem;
+  font-weight: normal;
+  margin-left: 3em;
+  list-style-type: circle;
+}
+
+/* Posts level dashes */
+ul ul ul {
+  list-style-type: none;  /* remove squares */
+  padding-left: 1.8em;
+}
+ul ul ul li {
+  position: relative;    /* needed for pseudo-element */
+}
+ul ul ul li::before {
+  content: "– ";         /* dash */
+  color: rgba(255, 255, 255, 1);
+  position: absolute;
+  left: -1.2em;          /* aligns dash correctly at start */
+}
+
+/* Links */
+a {
+  color: rgb(91, 255, 50);
+  text-decoration: underline;
+}
+
+/* Photos section overrides */
+.photos-section > ul {
+  padding-left: 0; /* outer list aligned with other sections */
+}
+
+.photos-section .photos-year {
+  margin-left: -8.4em; /* move year text */
+  font-weight: bold;   /* make year text bold */
+  font-size: 1.2rem;
+}
+
+.photos-section .photos-months {
+  padding-left: 2em; /* adjust how far post links are from the year */
+  list-style-type: none; /* remove default bullets */
+}
+
+.photos-section .photo-item::before {
+  content: "– ";       /* dash */
+  color: rgba(255,255,255,1);
+  font-weight: normal; /* force dash to stay normal */
+  position: absolute;
+  margin-left: -1.5em; /* positions the dash at start */
+}
+
+.photos-section .photo-link {
+  font-size: 0.8em;
+  font-weight: normal;  /* force link text normal */
+  text-decoration: underline;
+  color: rgb(91, 255, 50);
+  position: relative; /* required for dash positioning */
+}
+</style>
+
+<script>
+window.onscroll = function() {
+  const bar = document.getElementById("verticalScrollProgress");
+  const scrollTop = document.documentElement.scrollTop || document.body.scrollTop;
+  const scrollHeight = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+  const progress = (scrollTop / scrollHeight) * 100;
+
+  // Update progress bar height
+  bar.style.height = progress + "%";
+};
+</script>
+
+      </div>
+    </main>
+  </body>
+</html>

@@ -1,20 +1,39 @@
 {
-  "name": "new-site",
+  "name": "timothy-masso-site",
   "version": "1.0.0",
-  "description": "A modern website template with HTML, CSS, and JavaScript",
-  "main": "index.html",
+  "description": "Timothy Masso's personal website",
+  "type": "module",
   "scripts": {
-    "start": "python3 -m http.server 8000",
-    "dev": "python3 -m http.server 8000"
+    "start": "vite",
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "serve": "python -m http.server 8000"
+  },
+  "dependencies": {
+    "@react-three/fiber": "^8.15.0",
+    "@react-three/postprocessing": "^2.15.0",
+    "@tailwindcss/postcss": "^4.1.18",
+    "postprocessing": "^6.35.0",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "react-router-dom": "^7.12.0",
+    "three": "^0.160.0"
+  },
+  "devDependencies": {
+    "@types/react": "^18.2.0",
+    "@types/react-dom": "^18.2.0",
+    "@vitejs/plugin-react": "^4.2.0",
+    "autoprefixer": "^10.4.23",
+    "postcss": "^8.5.6",
+    "tailwindcss": "^4.1.18",
+    "vite": "^5.0.0"
   },
   "keywords": [
     "website",
-    "template",
-    "boilerplate",
-    "html",
-    "css",
-    "javascript"
+    "portfolio",
+    "static-site"
   ],
-  "author": "Your Name",
+  "author": "Timothy Masso",
   "license": "MIT"
 }

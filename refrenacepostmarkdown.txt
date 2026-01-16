@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <title>Aviation Geo - Location Data</title><!-- Begin Jekyll SEO tag v2.8.0 -->
+<meta name="generator" content="Jekyll v3.10.0" />
+<meta property="og:title" content="Aviation Geo - Location Data" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="Timothy Masso’s website" />
+<meta property="og:description" content="Timothy Masso’s website" />
+<link rel="canonical" href="http://localhost:4000/refrenacepostmarkdown.txt" />
+<meta property="og:url" content="http://localhost:4000/refrenacepostmarkdown.txt" />
+<meta property="og:site_name" content="Timothy Masso" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2024-03-06T22:55:02-05:00" />
+<meta name="twitter:card" content="summary" />
+<meta property="twitter:title" content="Aviation Geo - Location Data" />
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"BlogPosting","dateModified":"2024-03-06T22:55:02-05:00","datePublished":"2024-03-06T22:55:02-05:00","description":"Timothy Masso’s website","headline":"Aviation Geo - Location Data","mainEntityOfPage":{"@type":"WebPage","@id":"http://localhost:4000/refrenacepostmarkdown.txt"},"url":"http://localhost:4000/refrenacepostmarkdown.txt"}</script>
+<!-- End Jekyll SEO tag -->
+<link type="application/atom+xml" rel="alternate" href="http://localhost:4000/feed.xml" title="Timothy Masso" /><link rel="shortcut icon" type="image/x-icon" href="/assets/favicon.png" />
+  <link rel="stylesheet" href="/assets/css/main.css" />
+</head><body a="auto">
+    <main class="page-content" aria-label="Content">
+      <div class="w">
+        <a href="/">home</a><article>
+  <p class="post-meta">
+    <time datetime="2024-03-06 22:55:02 -0500">2024-03-06</time>
+  </p>
+  
+  <h1>Aviation Geo - Location Data</h1>
+
+  You’ll find this post in your `_posts` directory. Go ahead and edit it and re-build the site to see your changes. You can rebuild the site in many different ways, but the most common way is to run `jekyll serve`, which launches a web server and auto-regenerates your site when a file is updated.
+
+Jekyll requires blog post files to be named according to the following format:
+
+`YEAR-MONTH-DAY-title.MARKUP`
+
+Where `YEAR` is a four-digit number, `MONTH` and `DAY` are both two-digit numbers, and `MARKUP` is the file extension representing the format used in the file. After that, include the necessary front matter. Take a look at the source for this post to get an idea about how it works.
+
+Jekyll also offers powerful support for code snippets:
+
+<figure class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="k">def</span> <span class="nf">print_hi</span><span class="p">(</span><span class="nb">name</span><span class="p">)</span>
+  <span class="nb">puts</span> <span class="s2">"Hi, </span><span class="si">#{</span><span class="nb">name</span><span class="si">}</span><span class="s2">"</span>
+<span class="k">end</span>
+<span class="n">print_hi</span><span class="p">(</span><span class="s1">'Tom'</span><span class="p">)</span>
+<span class="c1">#=&gt; prints 'Hi, Tom' to STDOUT.</span></code></pre></figure>
+
+Check out the [Jekyll docs][jekyll-docs] for more info on how to get the most out of Jekyll. File all bugs/feature requests at [Jekyll’s GitHub repo][jekyll-gh]. If you have questions, you can ask them on [Jekyll Talk][jekyll-talk].
+
+[jekyll-docs]: https://jekyllrb.com/docs/home
+[jekyll-gh]:   https://github.com/jekyll/jekyll
+[jekyll-talk]: https://talk.jekyllrb.com/
+</article>
+      </div>
+    </main>
+  </body>
+</html>
