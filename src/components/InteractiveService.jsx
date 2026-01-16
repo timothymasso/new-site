@@ -1,15 +1,32 @@
-import React, { useState } from 'react'
+import React, { useState, useRef, useEffect } from 'react'
 
 export default function InteractiveService({ service, index }) {
   const [isHovered, setIsHovered] = useState(false)
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 })
+  const rafRef = useRef(null)
+  const mousePositionRef = useRef({ x: 0, y: 0 })
+
+  useEffect(() => {
+    return () => {
+      if (rafRef.current) {
+        cancelAnimationFrame(rafRef.current)
+      }
+    }
+  }, [])
 
   const handleMouseMove = (e) => {
     const rect = e.currentTarget.getBoundingClientRect()
-    setMousePosition({
+    mousePositionRef.current = {
       x: e.clientX - rect.left,
       y: e.clientY - rect.top,
-    })
+    }
+    
+    if (!rafRef.current) {
+      rafRef.current = requestAnimationFrame(() => {
+        setMousePosition(mousePositionRef.current)
+        rafRef.current = null
+      })
+    }
   }
 
   return (

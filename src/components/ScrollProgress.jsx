@@ -1,18 +1,31 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useRef } from 'react'
 
 export default function ScrollProgress() {
   const [scrollPercent, setScrollPercent] = useState(0)
+  const rafRef = useRef(null)
+  const scrollRef = useRef(0)
 
   useEffect(() => {
     const handleScroll = () => {
       const scrollTop = document.documentElement.scrollTop || document.body.scrollTop
       const scrollHeight = document.documentElement.scrollHeight - document.documentElement.clientHeight
-      const percent = (scrollTop / scrollHeight) * 100
-      setScrollPercent(percent)
+      scrollRef.current = (scrollTop / scrollHeight) * 100
+      
+      if (!rafRef.current) {
+        rafRef.current = requestAnimationFrame(() => {
+          setScrollPercent(scrollRef.current)
+          rafRef.current = null
+        })
+      }
     }
 
-    window.addEventListener('scroll', handleScroll)
-    return () => window.removeEventListener('scroll', handleScroll)
+    window.addEventListener('scroll', handleScroll, { passive: true })
+    return () => {
+      if (rafRef.current) {
+        cancelAnimationFrame(rafRef.current)
+      }
+      window.removeEventListener('scroll', handleScroll)
+    }
   }, [])
 
   return (

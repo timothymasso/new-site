@@ -13,6 +13,10 @@
   display: block;
   width: 100%;
   height: 100%;
+  will-change: contents;
+  transform: translateZ(0);
+  backface-visibility: hidden;
+  image-rendering: auto;
 }
 
 body {

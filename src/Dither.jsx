@@ -203,6 +203,8 @@ function DitheredWaves({
   }, [size, gl]);
 
   const prevColor = useRef([...waveColor]);
+  const prevProps = useRef({ waveSpeed, waveFrequency, waveAmplitude, enableMouseInteraction, mouseRadius });
+  
   useFrame(({ clock }) => {
     const u = waveUniformsRef.current;
 
@@ -210,17 +212,33 @@ function DitheredWaves({
       u.time.value = clock.getElapsedTime();
     }
 
-    if (u.waveSpeed.value !== waveSpeed) u.waveSpeed.value = waveSpeed;
-    if (u.waveFrequency.value !== waveFrequency) u.waveFrequency.value = waveFrequency;
-    if (u.waveAmplitude.value !== waveAmplitude) u.waveAmplitude.value = waveAmplitude;
+    // Only update uniforms if props changed
+    if (prevProps.current.waveSpeed !== waveSpeed) {
+      u.waveSpeed.value = waveSpeed;
+      prevProps.current.waveSpeed = waveSpeed;
+    }
+    if (prevProps.current.waveFrequency !== waveFrequency) {
+      u.waveFrequency.value = waveFrequency;
+      prevProps.current.waveFrequency = waveFrequency;
+    }
+    if (prevProps.current.waveAmplitude !== waveAmplitude) {
+      u.waveAmplitude.value = waveAmplitude;
+      prevProps.current.waveAmplitude = waveAmplitude;
+    }
 
     if (!prevColor.current.every((v, i) => v === waveColor[i])) {
       u.waveColor.value.set(...waveColor);
       prevColor.current = [...waveColor];
     }
 
-    u.enableMouseInteraction.value = enableMouseInteraction ? 1 : 0;
-    u.mouseRadius.value = mouseRadius;
+    if (prevProps.current.enableMouseInteraction !== enableMouseInteraction) {
+      u.enableMouseInteraction.value = enableMouseInteraction ? 1 : 0;
+      prevProps.current.enableMouseInteraction = enableMouseInteraction;
+    }
+    if (prevProps.current.mouseRadius !== mouseRadius) {
+      u.mouseRadius.value = mouseRadius;
+      prevProps.current.mouseRadius = mouseRadius;
+    }
 
     if (enableMouseInteraction) {
       u.mousePos.value.copy(mouseRef.current);
@@ -277,9 +295,14 @@ export default function Dither({
     <Canvas
       className="dither-container"
       camera={{ position: [0, 0, 6] }}
-      dpr={1}
-      gl={{ antialias: true, preserveDrawingBuffer: true }}
+      dpr={Math.min(window.devicePixelRatio, 1.5)}
+      gl={{ 
+        antialias: false, 
+        preserveDrawingBuffer: true,
+        powerPreference: "high-performance"
+      }}
       frameloop="always"
+      performance={{ min: 0.5 }}
     >
       <DitheredWaves
         waveSpeed={waveSpeed}
