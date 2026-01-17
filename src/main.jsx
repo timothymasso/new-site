@@ -1,8 +1,8 @@
 import React from 'react'
 import ReactDOM from 'react-dom/client'
-import Dither from './Dither'
+import Dither from './components/effects/Dither'
 import App from './App'
-import './index.css'
+import './styles/index.css'
 
 // Render the background dither effect
 const ditherContainer = document.getElementById('dither-container')

@@ -1,19 +1,19 @@
 import React, { useEffect, useRef, lazy, Suspense } from 'react'
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
-import Navigation from './components/Navigation'
-import Hero from './components/Hero'
-import About from './components/About'
-import Portfolio from './components/Portfolio'
-import Contact from './components/Contact'
-import SocialLinks from './components/SocialLinks'
-import Footer from './components/Footer'
-import ScrollProgress from './components/ScrollProgress'
+import Navigation from './components/layout/Navigation'
+import Hero from './components/sections/Hero'
+import About from './components/sections/About'
+import Portfolio from './components/sections/Portfolio'
+import Contact from './components/sections/Contact'
+import SocialLinks from './components/ui/SocialLinks'
+import Footer from './components/layout/Footer'
+import ScrollProgress from './components/ui/ScrollProgress'
 
 // Lazy load route components for code splitting
-const ProjectPage = lazy(() => import('./components/ProjectPage'))
-const AboutPage = lazy(() => import('./components/AboutPage'))
-const ProjectsPage = lazy(() => import('./components/ProjectsPage'))
-const ContactPage = lazy(() => import('./components/ContactPage'))
+const ProjectPage = lazy(() => import('./components/pages/ProjectPage'))
+const AboutPage = lazy(() => import('./components/pages/AboutPage'))
+const ProjectsPage = lazy(() => import('./components/pages/ProjectsPage'))
+const ContactPage = lazy(() => import('./components/pages/ContactPage'))
 
 const LoadingFallback = () => (
   <div className="min-h-screen flex items-center justify-center">
