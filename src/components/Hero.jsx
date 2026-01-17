@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react'
+import React, { useState } from 'react'
 import VariableProximity from './VariableProximity'
 
 const casualGreetings = [
@@ -12,29 +12,6 @@ const casualGreetings = [
 
 export default function Hero({ containerRef }) {
   const [greeting, setGreeting] = useState("Hello!")
-  const [mousePos, setMousePos] = useState({ x: 0, y: 0 })
-  const rafRef = useRef(null)
-  const mousePosRef = useRef({ x: 0, y: 0 })
-
-  useEffect(() => {
-    const handleMouseMove = (e) => {
-      mousePosRef.current = { x: e.clientX, y: e.clientY }
-      
-      if (!rafRef.current) {
-        rafRef.current = requestAnimationFrame(() => {
-          setMousePos(mousePosRef.current)
-          rafRef.current = null
-        })
-      }
-    }
-    window.addEventListener('mousemove', handleMouseMove, { passive: true })
-    return () => {
-      if (rafRef.current) {
-        cancelAnimationFrame(rafRef.current)
-      }
-      window.removeEventListener('mousemove', handleMouseMove)
-    }
-  }, [])
 
   const handleGreetingClick = () => {
     const randomGreeting = casualGreetings[Math.floor(Math.random() * casualGreetings.length)]
@@ -72,13 +49,6 @@ export default function Hero({ containerRef }) {
           </span>
         </div>
       </div>
-      <div 
-        className="absolute w-64 h-64 bg-white/5 rounded-full blur-3xl pointer-events-none transition-all duration-300"
-        style={{
-          left: `${mousePos.x - 128}px`,
-          top: `${mousePos.y - 128}px`,
-        }}
-      />
     </section>
   )
 }

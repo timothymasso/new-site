@@ -33,20 +33,17 @@ function Home() {
           height: 'calc(100vh - 4rem)',
           gridTemplateRows: 'repeat(6, minmax(0, 1fr))'
         }}>
-          <div className="col-span-12 md:col-span-4 row-start-1 row-span-2 border border-white/30 flex items-start self-start" style={{ minHeight: 0, height: 'auto' }}>
+          <div className="col-span-12 md:col-span-4 row-start-1 row-span-2 border border-white/30 overflow-y-auto overflow-x-hidden" style={{ minHeight: 0 }}>
             <Hero containerRef={containerRef} />
           </div>
           <div className="col-span-12 md:col-span-8 row-start-1 row-span-6 overflow-y-auto overflow-x-hidden border border-white/30" style={{ minHeight: 0 }}>
             <Portfolio containerRef={containerRef} />
           </div>
-          <div className="col-span-12 md:col-span-4 row-start-4 row-span-1 overflow-hidden pb-0 border border-white/30" style={{ marginBottom: 0, paddingBottom: 0, minHeight: 0 }}>
+          <div className="col-span-12 md:col-span-4 row-start-3 row-span-2 overflow-y-auto pb-0 border border-white/30" style={{ marginBottom: 0, paddingBottom: 0, minHeight: 0 }}>
             <About containerRef={containerRef} />
           </div>
-          <div className="col-span-12 md:col-span-2 row-start-5 row-span-2 overflow-y-auto pb-0 border border-white/30" style={{ marginBottom: 0, paddingBottom: 0 }}>
+          <div className="col-span-12 md:col-span-4 row-start-5 row-span-2 overflow-y-auto pb-0 border border-white/30" style={{ marginBottom: 0, paddingBottom: 0 }}>
             <Contact containerRef={containerRef} />
-          </div>
-          <div className="col-span-12 md:col-span-2 row-start-5 row-span-2 overflow-y-auto pb-0 border border-white/30" style={{ marginBottom: 0, paddingBottom: 0 }}>
-            <SocialLinks containerRef={containerRef} />
           </div>
         </div>
         <Footer />

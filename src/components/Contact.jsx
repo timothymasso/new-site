@@ -1,102 +1,517 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
+import { Canvas, useFrame } from '@react-three/fiber'
+import * as THREE from 'three'
 import VariableProximity from './VariableProximity'
 
-const casualMessages = [
-  "Let's make something cool together",
-  "Want to collaborate?",
-  "Hit me up if you want to chat",
-  "Always down to talk about music or code",
-  "Let's connect!",
-]
+
+function CircularSoundReactor({ frequencies, analyserRef }) {
+  const groupRef = useRef()
+  const barsRef = useRef([])
+  const timeRef = useRef(0)
+  
+  useEffect(() => {
+    // Create circular arrangement of bars
+    const numBars = 32
+    barsRef.current = []
+    for (let i = 0; i < numBars; i++) {
+      const angle = (i / numBars) * Math.PI * 2
+      barsRef.current.push({
+        angle,
+        radius: 1.2,
+        baseHeight: 0.1
+      })
+    }
+  }, [])
+
+  useFrame((state, delta) => {
+    timeRef.current += delta
+    
+    if (groupRef.current) {
+      groupRef.current.rotation.y += delta * 0.15
+    }
+  })
+
+  return (
+    <group ref={groupRef}>
+      {/* Original */}
+      <group>
+        {/* Central sphere */}
+        <mesh position={[0, 0, 0]}>
+          <sphereGeometry args={[0.2, 8, 8]} />
+          <meshStandardMaterial 
+            color={new THREE.Color(0.2, 0.3, 1)} 
+            emissive={new THREE.Color(0.1, 0.15, 0.5)}
+            emissiveIntensity={0.5}
+          />
+        </mesh>
+        
+        {/* Circular frequency bars */}
+        {barsRef.current.map((bar, i) => {
+          const freqIndex = Math.floor((i / barsRef.current.length) * frequencies.length)
+          const intensity = frequencies[freqIndex] / 255 || 0
+          const height = bar.baseHeight + intensity * 1.5
+          const x = Math.cos(bar.angle) * bar.radius
+          const z = Math.sin(bar.angle) * bar.radius
+          
+          return (
+            <mesh key={i} position={[x, height / 2, z]} rotation={[0, bar.angle, 0]}>
+              <boxGeometry args={[0.05, height, 0.05]} />
+              <meshStandardMaterial 
+                color={new THREE.Color(0.2 + intensity * 0.1, 0.3 + intensity * 0.1, 1)}
+                emissive={new THREE.Color(0.1 + intensity * 0.05, 0.15 + intensity * 0.05, 0.5 + intensity * 0.2)}
+              />
+            </mesh>
+          )
+        })}
+        
+      </group>
+      
+      {/* Mirrored (flipped vertically) */}
+      <group scale={[1, -1, 1]}>
+        {/* Central sphere */}
+        <mesh position={[0, 0, 0]}>
+          <sphereGeometry args={[0.2, 8, 8]} />
+          <meshStandardMaterial 
+            color={new THREE.Color(0.2, 0.3, 1)} 
+            emissive={new THREE.Color(0.1, 0.15, 0.5)}
+            emissiveIntensity={0.5}
+          />
+        </mesh>
+        
+        {/* Circular frequency bars */}
+        {barsRef.current.map((bar, i) => {
+          const freqIndex = Math.floor((i / barsRef.current.length) * frequencies.length)
+          const intensity = frequencies[freqIndex] / 255 || 0
+          const height = bar.baseHeight + intensity * 1.5
+          const x = Math.cos(bar.angle) * bar.radius
+          const z = Math.sin(bar.angle) * bar.radius
+          
+          return (
+            <mesh key={`mirror-${i}`} position={[x, height / 2, z]} rotation={[0, bar.angle, 0]}>
+              <boxGeometry args={[0.05, height, 0.05]} />
+              <meshStandardMaterial 
+                color={new THREE.Color(0.2 + intensity * 0.1, 0.3 + intensity * 0.1, 1)}
+                emissive={new THREE.Color(0.1 + intensity * 0.05, 0.15 + intensity * 0.05, 0.5 + intensity * 0.2)}
+              />
+            </mesh>
+          )
+        })}
+        
+        {/* Outer ring particles */}
+        {Array.from({ length: 64 }).map((_, i) => {
+          const angle = (i / 64) * Math.PI * 2 + timeRef.current * 0.5
+          const radius = 1.8
+          const freqIndex = Math.floor((i / 64) * frequencies.length)
+          const intensity = frequencies[freqIndex] / 255 || 0
+          const x = Math.cos(angle) * radius
+          const z = Math.sin(angle) * radius
+          const y = Math.sin(timeRef.current * 2 + i) * 0.3 * intensity
+          
+          return (
+            <mesh key={`mirror-particle-${i}`} position={[x, y, z]} scale={0.03 + intensity * 0.05}>
+              <sphereGeometry args={[1, 8, 8]} />
+              <meshStandardMaterial 
+                color={new THREE.Color(0.1 + intensity * 0.05, 0.15 + intensity * 0.05, 0.5 + intensity * 0.2)}
+                emissive={new THREE.Color(0.05 + intensity * 0.02, 0.08 + intensity * 0.02, 0.25 + intensity * 0.1)}
+              />
+            </mesh>
+          )
+        })}
+      </group>
+    </group>
+  )
+}
 
 export default function Contact({ containerRef }) {
-  const [formData, setFormData] = useState({
-    name: '',
-    email: '',
-    message: ''
-  })
-  const [messageIndex, setMessageIndex] = useState(0)
-  const [submitted, setSubmitted] = useState(false)
+  const audioContextRef = useRef(null)
+  const analyserRef = useRef(null)
+  const oscillatorsRef = useRef({})
+  const [isActive, setIsActive] = useState(false)
+  const [mousePos, setMousePos] = useState({ x: 0, y: 0 })
+  const [isMouseDown, setIsMouseDown] = useState(false)
+  const [frequencies, setFrequencies] = useState(new Uint8Array(32))
+  const [waveform, setWaveform] = useState(new Uint8Array(32))
+  const freqCanvasRef = useRef(null)
+  const waveformCanvasRef = useRef(null)
+  const eqCanvasRef = useRef(null)
 
-  const handleChange = (e) => {
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value
-    })
+
+  useEffect(() => {
+    let animationFrameId = null
+    
+    const drawFrequencyChart = () => {
+      const canvas = freqCanvasRef.current
+      if (!canvas) return
+      
+      const ctx = canvas.getContext('2d')
+      if (!ctx) return
+      
+      const width = canvas.width
+      const height = canvas.height
+      
+      if (width === 0 || height === 0) {
+        // Try to size canvas if not sized
+        canvas.width = 75
+        canvas.height = 80
+        return
+      }
+      
+      // Clear with transparent background
+      ctx.clearRect(0, 0, width, height)
+      
+      if (frequencies.length === 0) return
+      
+      ctx.strokeStyle = 'rgba(255, 255, 255, 0.9)'
+      ctx.lineWidth = 2
+      ctx.beginPath()
+      
+      const sliceWidth = width / frequencies.length
+      let x = 0
+      
+      for (let i = 0; i < frequencies.length; i++) {
+        const v = frequencies[i] / 255.0
+        const y = height - (v * height)
+        
+        if (i === 0) {
+          ctx.moveTo(x, y)
+        } else {
+          ctx.lineTo(x, y)
+        }
+        
+        x += sliceWidth
+      }
+      
+      ctx.stroke()
+    }
+
+    const drawWaveform = () => {
+      const canvas = waveformCanvasRef.current
+      if (!canvas) return
+      
+      const ctx = canvas.getContext('2d')
+      if (!ctx) return
+      
+      const width = canvas.width
+      const height = canvas.height
+      
+      if (width === 0 || height === 0) {
+        // Try to size canvas if not sized
+        canvas.width = 120
+        canvas.height = 100
+        return
+      }
+      
+      // Clear with transparent background
+      ctx.clearRect(0, 0, width, height)
+      
+      if (waveform.length === 0) return
+      
+      ctx.lineWidth = 2
+      ctx.strokeStyle = 'rgba(255, 255, 255, 0.9)'
+      ctx.beginPath()
+      
+      const sliceWidth = width / waveform.length
+      let x = 0
+      const centerY = height / 2
+      
+      for (let i = 0; i < waveform.length; i++) {
+        const v = (waveform[i] - 128) / 128.0
+        const y = centerY + (v * centerY)
+        
+        if (i === 0) {
+          ctx.moveTo(x, y)
+        } else {
+          ctx.lineTo(x, y)
+        }
+        
+        x += sliceWidth
+      }
+      
+      ctx.stroke()
+    }
+
+    const drawEQ = () => {
+      const canvas = eqCanvasRef.current
+      if (!canvas) return
+      
+      const ctx = canvas.getContext('2d')
+      if (!ctx) return
+      
+      const width = canvas.width
+      const height = canvas.height
+      
+      if (width === 0 || height === 0) {
+        // Try to size canvas if not sized
+        canvas.width = 120
+        canvas.height = 100
+        return
+      }
+      
+      // Clear with transparent background
+      ctx.clearRect(0, 0, width, height)
+      
+      if (frequencies.length === 0) return
+      
+      const numBars = 32
+      const barWidth = width / numBars
+      const gap = barWidth * 0.1
+      
+      for (let i = 0; i < numBars; i++) {
+        const freqIndex = Math.floor((i / numBars) * frequencies.length)
+        const intensity = frequencies[freqIndex] / 255
+        const barHeight = intensity * height
+        
+        const gradient = ctx.createLinearGradient(0, height - barHeight, 0, height)
+        gradient.addColorStop(0, 'rgba(255, 255, 255, 1.0)')
+        gradient.addColorStop(1, 'rgba(255, 255, 255, 0.6)')
+        
+        ctx.fillStyle = gradient
+        ctx.fillRect(
+          i * barWidth + gap,
+          height - barHeight,
+          barWidth - gap * 2,
+          barHeight
+        )
+      }
+    }
+
+    const animate = () => {
+      drawFrequencyChart()
+      drawWaveform()
+      drawEQ()
+      animationFrameId = requestAnimationFrame(animate)
+    }
+
+    animationFrameId = requestAnimationFrame(animate)
+    return () => {
+      if (animationFrameId) {
+        cancelAnimationFrame(animationFrameId)
+      }
+    }
+  }, [frequencies, waveform])
+
+  const initAudioContext = async () => {
+    if (!audioContextRef.current) {
+      try {
+        audioContextRef.current = new (window.AudioContext || window.webkitAudioContext)()
+        const analyser = audioContextRef.current.createAnalyser()
+        analyser.fftSize = 256
+        analyserRef.current = analyser
+        setIsActive(true)
+        
+        // Start analyzing audio
+        const updateAnalysis = () => {
+          if (!analyserRef.current) return
+          
+          const freqData = new Uint8Array(analyser.frequencyBinCount)
+          const waveData = new Uint8Array(analyser.frequencyBinCount)
+          
+          analyser.getByteFrequencyData(freqData)
+          analyser.getByteTimeDomainData(waveData)
+          
+          setFrequencies(freqData)
+          setWaveform(waveData)
+          
+          requestAnimationFrame(updateAnalysis)
+        }
+        updateAnalysis()
+      } catch (error) {
+        console.error('Error initializing audio:', error)
+      }
+    }
   }
 
-  const handleSubmit = (e) => {
-    e.preventDefault()
-    setSubmitted(true)
+  const playNote = async (x, y) => {
+    if (!audioContextRef.current || !analyserRef.current) {
+      await initAudioContext()
+      // Wait a bit for analyser to be ready
+      await new Promise(resolve => setTimeout(resolve, 50))
+    }
+
+    if (!audioContextRef.current || !analyserRef.current) return
+
+    const key = `${x},${y}`
+    
+    // Stop existing oscillator at this position
+    if (oscillatorsRef.current[key]) {
+      oscillatorsRef.current[key].oscillator.stop()
+      oscillatorsRef.current[key].gainNode.disconnect()
+    }
+
+    const container = document.getElementById('contact-visualizer')
+    if (!container) return
+    
+    const normalizedX = x / container.offsetWidth
+    const normalizedY = y / container.offsetHeight
+    
+    // Map position to frequency (musical scale) - favoring higher frequencies
+    // Use exponential curve to favor highs: y^2 maps more of the range to higher freqs
+    const normalizedYHigh = normalizedY * normalizedY
+    const baseFreq = 220 // A3 (higher starting point)
+    const semitones = Math.floor(normalizedYHigh * 36) // 3 octaves, favoring highs
+    const frequency = baseFreq * Math.pow(2, semitones / 12)
+    
+    // Map X position to wave type
+    const waveTypes = ['sine', 'square', 'sawtooth', 'triangle']
+    const waveType = waveTypes[Math.floor(normalizedX * waveTypes.length)]
+    
+    const oscillator = audioContextRef.current.createOscillator()
+    const gainNode = audioContextRef.current.createGain()
+    
+    oscillator.type = waveType
+    oscillator.frequency.setValueAtTime(frequency, audioContextRef.current.currentTime)
+    
+    gainNode.gain.setValueAtTime(0.2, audioContextRef.current.currentTime)
+    gainNode.gain.exponentialRampToValueAtTime(0.01, audioContextRef.current.currentTime + 0.8)
+    
+    // Connect through analyser
+    oscillator.connect(gainNode)
+    gainNode.connect(analyserRef.current)
+    
+    // Make sure analyser is connected to destination (only once)
+    if (!analyserRef.current._connected) {
+      analyserRef.current.connect(audioContextRef.current.destination)
+      analyserRef.current._connected = true
+    }
+    
+    oscillator.start()
+    oscillator.stop(audioContextRef.current.currentTime + 0.8)
+    
+    oscillatorsRef.current[key] = {
+      oscillator,
+      gainNode,
+      startTime: Date.now()
+    }
+    
     setTimeout(() => {
-      setSubmitted(false)
-      setFormData({ name: '', email: '', message: '' })
-    }, 3000)
+      delete oscillatorsRef.current[key]
+    }, 800)
+  }
+
+  const getContainerPosition = (e) => {
+    const container = e.currentTarget
+    const rect = container.getBoundingClientRect()
+    const x = e.clientX - rect.left
+    const y = e.clientY - rect.top
+    return { x, y }
+  }
+
+  const handleMouseDown = (e) => {
+    setIsMouseDown(true)
+    const pos = getContainerPosition(e)
+    setMousePos(pos)
+    playNote(pos.x, pos.y)
+  }
+
+  const handleMouseMove = (e) => {
+    const pos = getContainerPosition(e)
+    setMousePos(pos)
+    if (isMouseDown) {
+      playNote(pos.x, pos.y)
+    }
+  }
+
+  const handleMouseUp = () => {
+    setIsMouseDown(false)
   }
 
   useEffect(() => {
-    const interval = setInterval(() => {
-      setMessageIndex((prev) => (prev + 1) % casualMessages.length)
-    }, 3000)
-    return () => clearInterval(interval)
+    const updateCanvasSize = () => {
+      if (freqCanvasRef.current) {
+        const canvas = freqCanvasRef.current
+        canvas.width = 75
+        canvas.height = 80
+      }
+      if (waveformCanvasRef.current) {
+        const canvas = waveformCanvasRef.current
+        canvas.width = 120
+        canvas.height = 100
+      }
+      if (eqCanvasRef.current) {
+        const canvas = eqCanvasRef.current
+        canvas.width = 120
+        canvas.height = 100
+      }
+    }
+
+    // Initial setup
+    const timer = setTimeout(updateCanvasSize, 100)
+    updateCanvasSize()
+    return () => {
+      clearTimeout(timer)
+    }
   }, [])
 
   return (
-    <section id="contact" className="h-full px-4 pt-4 pb-0 flex flex-col">
-      <h2 className="text-2xl md:text-3xl font-light text-white mb-4">
-        <VariableProximity label="Say hi" containerRef={containerRef} radius={90} falloff="gaussian" className="text-2xl md:text-3xl font-light text-white" />
-      </h2>
-      <p className="text-sm text-white mb-4 animate-fade-in">
-        <VariableProximity label={casualMessages[messageIndex]} containerRef={containerRef} radius={90} falloff="gaussian" className="text-sm text-white" />
-      </p>
-      <div className="space-y-2 mb-4">
-        <a 
-          href="mailto:timothy.masso@gmail.com" 
-          className="text-white hover:text-white transition-colors font-light text-sm block hover:translate-x-1 transition-transform"
-        >
-          <VariableProximity label="timothy.masso@gmail.com" containerRef={containerRef} radius={90} falloff="gaussian" className="text-sm font-light" />
-        </a>
-        <p className="text-white/90 font-light text-xs">
-          <VariableProximity label="NYC area" containerRef={containerRef} radius={90} falloff="gaussian" className="text-xs text-white/90 font-light" />
-        </p>
+    <section 
+      id="contact" 
+      className="h-full px-4 pt-2 pb-4 flex flex-col relative overflow-hidden"
+      onMouseDown={handleMouseDown}
+      onMouseMove={handleMouseMove}
+      onMouseUp={handleMouseUp}
+      onMouseLeave={handleMouseUp}
+    >
+      <div 
+        id="contact-visualizer"
+        className="flex-1 relative cursor-crosshair min-h-0 h-full" 
+        onClick={initAudioContext}
+        onMouseDown={handleMouseDown}
+        onMouseMove={handleMouseMove}
+        onMouseUp={handleMouseUp}
+        onMouseLeave={handleMouseUp}
+      >
+        <Canvas camera={{ position: [0, 0, 3.5], fov: 60 }}>
+          <ambientLight intensity={0.5} />
+          <pointLight position={[3, 3, 3]} intensity={1} />
+          <pointLight position={[-3, -3, -3]} intensity={0.5} />
+          <directionalLight position={[0, 5, 0]} intensity={0.3} />
+          <CircularSoundReactor frequencies={frequencies} analyserRef={analyserRef} />
+        </Canvas>
+        
+        {/* 2D Visualizations */}
+        {/* Frequency Chart - Top Left */}
+        <canvas
+          ref={freqCanvasRef}
+          className="absolute pointer-events-none z-10"
+          style={{ top: '8px', left: '8px', width: '75px', height: '80px' }}
+        />
+        
+        {/* Waveform - Top Right */}
+        <canvas
+          ref={waveformCanvasRef}
+          className="absolute pointer-events-none z-10"
+          style={{ top: '8px', right: '8px', width: '120px', height: '100px' }}
+        />
+        
+        {/* EQ Bars - Bottom Right */}
+        <canvas
+          ref={eqCanvasRef}
+          className="absolute pointer-events-none z-10"
+          style={{ bottom: '8px', right: '8px', width: '120px', height: '100px' }}
+        />
+        
+        {mousePos && (
+          <div 
+            className="absolute pointer-events-none z-20"
+            style={{
+              left: `${mousePos.x}px`,
+              top: `${mousePos.y}px`,
+              transform: 'translate(-50%, -50%)',
+              width: isMouseDown ? '16px' : '12px',
+              height: isMouseDown ? '16px' : '12px',
+              borderRadius: '50%',
+              backgroundColor: 'rgba(51, 77, 255, 0.8)',
+              boxShadow: '0 0 10px rgba(51, 77, 255, 0.8)',
+              transition: 'width 0.1s, height 0.1s'
+            }}
+          />
+        )}
+        <div className="absolute bottom-2 left-2 z-10 pointer-events-none">
+          <p className="text-xs text-white font-light">
+            click & drag to play
+          </p>
+        </div>
       </div>
-      <form onSubmit={handleSubmit} className="space-y-2">
-        <input
-          type="text"
-          name="name"
-          placeholder="Your name"
-          value={formData.name}
-          onChange={handleChange}
-          className="w-full px-3 py-2 text-sm bg-white/10 border border-white/20 text-white placeholder-white/85 font-light focus:outline-none focus:border-white/40 focus:bg-white/15 transition-all rounded"
-          required
-        />
-        <input
-          type="email"
-          name="email"
-          placeholder="Your email"
-          value={formData.email}
-          onChange={handleChange}
-          className="w-full px-3 py-2 text-sm bg-white/10 border border-white/20 text-white placeholder-white/85 font-light focus:outline-none focus:border-white/40 focus:bg-white/15 transition-all rounded"
-          required
-        />
-        <textarea
-          name="message"
-          placeholder="What's up?"
-          value={formData.message}
-          onChange={handleChange}
-          rows="3"
-          className="w-full px-3 py-2 text-sm bg-white/10 border border-white/20 text-white placeholder-white/85 font-light focus:outline-none focus:border-white/40 focus:bg-white/15 transition-all resize-none rounded"
-          required
-        />
-        <button
-          type="submit"
-          className={`px-4 py-2 text-sm bg-white text-black hover:bg-white/90 transition-all font-light w-full rounded ${
-            submitted ? 'bg-green-500 text-white' : ''
-          }`}
-        >
-          <VariableProximity label={submitted ? '✓ Sent!' : 'Send it'} containerRef={containerRef} radius={90} falloff="gaussian" className="text-sm font-light" />
-        </button>
-      </form>
     </section>
   )
 }

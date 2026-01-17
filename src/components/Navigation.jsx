@@ -105,7 +105,7 @@ export default function Navigation() {
       scrolled ? 'bg-black/40 backdrop-blur-lg border-b border-white/20' : 'bg-transparent'
     }`}>
       <div className="w-full px-6 py-4">
-        <div className="flex items-center justify-end">
+        <div className="flex items-center justify-between">
           <div className="flex items-center space-x-6 text-sm text-white font-light">
             {navItems.map((item) => (
               <button
@@ -125,9 +125,9 @@ export default function Navigation() {
                 )}
               </button>
             ))}
-            <div className="text-xs text-white/95 font-light ml-6">
-              <VariableProximity label={formatTime(currentTime)} containerRef={null} radius={90} falloff="gaussian" className="text-xs text-white/95 font-light" />
-            </div>
+          </div>
+          <div className="text-xs text-white/95 font-light">
+            <VariableProximity label={formatTime(currentTime)} containerRef={null} radius={90} falloff="gaussian" className="text-xs text-white/95 font-light" />
           </div>
         </div>
       </div>
