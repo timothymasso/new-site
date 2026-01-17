@@ -10,6 +10,14 @@ const formatTime = (date) => {
   })
 }
 
+const formatDate = (date) => {
+  return date.toLocaleDateString('en-US', {
+    month: 'short',
+    day: 'numeric',
+    year: 'numeric'
+  })
+}
+
 export default function Navigation() {
   const [currentTime, setCurrentTime] = useState(new Date())
   const [scrolled, setScrolled] = useState(false)
@@ -122,7 +130,8 @@ export default function Navigation() {
               </button>
             ))}
           </div>
-          <div className="text-xs text-white/95 font-light">
+          <div className="text-xs text-white/95 font-light flex items-center gap-2">
+            <VariableProximity label={formatDate(currentTime)} containerRef={null} radius={90} falloff="gaussian" className="text-xs text-white/95 font-light" />
             <VariableProximity label={formatTime(currentTime)} containerRef={null} radius={90} falloff="gaussian" className="text-xs text-white/95 font-light" />
           </div>
         </div>
