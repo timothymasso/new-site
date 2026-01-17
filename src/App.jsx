@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react'
+import React, { useEffect, useRef, lazy, Suspense } from 'react'
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import Navigation from './components/Navigation'
 import Hero from './components/Hero'
@@ -8,10 +8,18 @@ import Contact from './components/Contact'
 import SocialLinks from './components/SocialLinks'
 import Footer from './components/Footer'
 import ScrollProgress from './components/ScrollProgress'
-import ProjectPage from './components/ProjectPage'
-import AboutPage from './components/AboutPage'
-import ProjectsPage from './components/ProjectsPage'
-import ContactPage from './components/ContactPage'
+
+// Lazy load route components for code splitting
+const ProjectPage = lazy(() => import('./components/ProjectPage'))
+const AboutPage = lazy(() => import('./components/AboutPage'))
+const ProjectsPage = lazy(() => import('./components/ProjectsPage'))
+const ContactPage = lazy(() => import('./components/ContactPage'))
+
+const LoadingFallback = () => (
+  <div className="min-h-screen flex items-center justify-center">
+    <p className="text-white font-light">Loading...</p>
+  </div>
+)
 
 function Home() {
   const containerRef = useRef(null)
@@ -56,15 +64,17 @@ function Home() {
 export default function App() {
   return (
     <BrowserRouter>
-      <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/about" element={<AboutPage />} />
-        <Route path="/projects" element={<ProjectsPage />} />
-        <Route path="/contact" element={<ContactPage />} />
-        <Route path="/performances/:slug" element={<ProjectPage />} />
-        <Route path="/projects/:slug" element={<ProjectPage />} />
-        <Route path="/compositions/:slug" element={<ProjectPage />} />
-      </Routes>
+      <Suspense fallback={<LoadingFallback />}>
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/about" element={<AboutPage />} />
+          <Route path="/projects" element={<ProjectsPage />} />
+          <Route path="/contact" element={<ContactPage />} />
+          <Route path="/performances/:slug" element={<ProjectPage />} />
+          <Route path="/projects/:slug" element={<ProjectPage />} />
+          <Route path="/compositions/:slug" element={<ProjectPage />} />
+        </Routes>
+      </Suspense>
     </BrowserRouter>
   )
 }

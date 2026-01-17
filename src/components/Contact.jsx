@@ -1,26 +1,25 @@
-import React, { useState, useEffect, useRef } from 'react'
+import React, { useState, useEffect, useRef, useMemo, useCallback } from 'react'
 import { Canvas, useFrame } from '@react-three/fiber'
 import * as THREE from 'three'
 import VariableProximity from './VariableProximity'
 
-
-function CircularSoundReactor({ frequencies, analyserRef }) {
+function CircularSoundReactor({ frequencies }) {
   const groupRef = useRef()
-  const barsRef = useRef([])
   const timeRef = useRef(0)
   
-  useEffect(() => {
+  const bars = useMemo(() => {
     // Create circular arrangement of bars
     const numBars = 32
-    barsRef.current = []
+    const barsArray = []
     for (let i = 0; i < numBars; i++) {
       const angle = (i / numBars) * Math.PI * 2
-      barsRef.current.push({
+      barsArray.push({
         angle,
         radius: 1.2,
         baseHeight: 0.1
       })
     }
+    return barsArray
   }, [])
 
   useFrame((state, delta) => {
@@ -46,8 +45,8 @@ function CircularSoundReactor({ frequencies, analyserRef }) {
         </mesh>
         
         {/* Circular frequency bars */}
-        {barsRef.current.map((bar, i) => {
-          const freqIndex = Math.floor((i / barsRef.current.length) * frequencies.length)
+        {bars.map((bar, i) => {
+          const freqIndex = Math.floor((i / bars.length) * frequencies.length)
           const intensity = frequencies[freqIndex] / 255 || 0
           const height = bar.baseHeight + intensity * 1.5
           const x = Math.cos(bar.angle) * bar.radius
@@ -63,7 +62,6 @@ function CircularSoundReactor({ frequencies, analyserRef }) {
             </mesh>
           )
         })}
-        
       </group>
       
       {/* Mirrored (flipped vertically) */}
@@ -79,8 +77,8 @@ function CircularSoundReactor({ frequencies, analyserRef }) {
         </mesh>
         
         {/* Circular frequency bars */}
-        {barsRef.current.map((bar, i) => {
-          const freqIndex = Math.floor((i / barsRef.current.length) * frequencies.length)
+        {bars.map((bar, i) => {
+          const freqIndex = Math.floor((i / bars.length) * frequencies.length)
           const intensity = frequencies[freqIndex] / 255 || 0
           const height = bar.baseHeight + intensity * 1.5
           const x = Math.cos(bar.angle) * bar.radius
@@ -92,27 +90,6 @@ function CircularSoundReactor({ frequencies, analyserRef }) {
               <meshStandardMaterial 
                 color={new THREE.Color(0.2 + intensity * 0.1, 0.3 + intensity * 0.1, 1)}
                 emissive={new THREE.Color(0.1 + intensity * 0.05, 0.15 + intensity * 0.05, 0.5 + intensity * 0.2)}
-              />
-            </mesh>
-          )
-        })}
-        
-        {/* Outer ring particles */}
-        {Array.from({ length: 64 }).map((_, i) => {
-          const angle = (i / 64) * Math.PI * 2 + timeRef.current * 0.5
-          const radius = 1.8
-          const freqIndex = Math.floor((i / 64) * frequencies.length)
-          const intensity = frequencies[freqIndex] / 255 || 0
-          const x = Math.cos(angle) * radius
-          const z = Math.sin(angle) * radius
-          const y = Math.sin(timeRef.current * 2 + i) * 0.3 * intensity
-          
-          return (
-            <mesh key={`mirror-particle-${i}`} position={[x, y, z]} scale={0.03 + intensity * 0.05}>
-              <sphereGeometry args={[1, 8, 8]} />
-              <meshStandardMaterial 
-                color={new THREE.Color(0.1 + intensity * 0.05, 0.15 + intensity * 0.05, 0.5 + intensity * 0.2)}
-                emissive={new THREE.Color(0.05 + intensity * 0.02, 0.08 + intensity * 0.02, 0.25 + intensity * 0.1)}
               />
             </mesh>
           )
@@ -136,6 +113,10 @@ export default function Contact({ containerRef }) {
   const eqCanvasRef = useRef(null)
 
 
+  // Throttle canvas drawing to reduce CPU usage
+  const lastDrawTime = useRef(0)
+  const DRAW_THROTTLE = 16 // ~60fps
+
   useEffect(() => {
     let animationFrameId = null
     
@@ -150,13 +131,11 @@ export default function Contact({ containerRef }) {
       const height = canvas.height
       
       if (width === 0 || height === 0) {
-        // Try to size canvas if not sized
         canvas.width = 75
         canvas.height = 80
         return
       }
       
-      // Clear with transparent background
       ctx.clearRect(0, 0, width, height)
       
       if (frequencies.length === 0) return
@@ -195,13 +174,11 @@ export default function Contact({ containerRef }) {
       const height = canvas.height
       
       if (width === 0 || height === 0) {
-        // Try to size canvas if not sized
         canvas.width = 120
         canvas.height = 100
         return
       }
       
-      // Clear with transparent background
       ctx.clearRect(0, 0, width, height)
       
       if (waveform.length === 0) return
@@ -241,13 +218,11 @@ export default function Contact({ containerRef }) {
       const height = canvas.height
       
       if (width === 0 || height === 0) {
-        // Try to size canvas if not sized
         canvas.width = 120
         canvas.height = 100
         return
       }
       
-      // Clear with transparent background
       ctx.clearRect(0, 0, width, height)
       
       if (frequencies.length === 0) return
@@ -275,10 +250,15 @@ export default function Contact({ containerRef }) {
       }
     }
 
-    const animate = () => {
-      drawFrequencyChart()
-      drawWaveform()
-      drawEQ()
+    const animate = (currentTime) => {
+      // Throttle drawing - use performance.now() if currentTime not provided
+      const now = currentTime || performance.now()
+      if (now - lastDrawTime.current >= DRAW_THROTTLE) {
+        drawFrequencyChart()
+        drawWaveform()
+        drawEQ()
+        lastDrawTime.current = now
+      }
       animationFrameId = requestAnimationFrame(animate)
     }
 
@@ -290,7 +270,7 @@ export default function Contact({ containerRef }) {
     }
   }, [frequencies, waveform])
 
-  const initAudioContext = async () => {
+  const initAudioContext = useCallback(async () => {
     if (!audioContextRef.current) {
       try {
         audioContextRef.current = new (window.AudioContext || window.webkitAudioContext)()
@@ -299,29 +279,37 @@ export default function Contact({ containerRef }) {
         analyserRef.current = analyser
         setIsActive(true)
         
-        // Start analyzing audio
-        const updateAnalysis = () => {
+        // Start analyzing audio with throttling
+        let lastUpdateTime = 0
+        const UPDATE_THROTTLE = 16 // ~60fps
+        
+        const updateAnalysis = (currentTime) => {
           if (!analyserRef.current) return
           
-          const freqData = new Uint8Array(analyser.frequencyBinCount)
-          const waveData = new Uint8Array(analyser.frequencyBinCount)
-          
-          analyser.getByteFrequencyData(freqData)
-          analyser.getByteTimeDomainData(waveData)
-          
-          setFrequencies(freqData)
-          setWaveform(waveData)
+          // Throttle updates to reduce state changes
+          if (currentTime - lastUpdateTime >= UPDATE_THROTTLE) {
+            const freqData = new Uint8Array(analyser.frequencyBinCount)
+            const waveData = new Uint8Array(analyser.frequencyBinCount)
+            
+            analyser.getByteFrequencyData(freqData)
+            analyser.getByteTimeDomainData(waveData)
+            
+            setFrequencies(freqData)
+            setWaveform(waveData)
+            
+            lastUpdateTime = currentTime
+          }
           
           requestAnimationFrame(updateAnalysis)
         }
-        updateAnalysis()
+        requestAnimationFrame(updateAnalysis)
       } catch (error) {
         console.error('Error initializing audio:', error)
       }
     }
-  }
+  }, [])
 
-  const playNote = async (x, y) => {
+  const playNote = useCallback(async (x, y) => {
     if (!audioContextRef.current || !analyserRef.current) {
       await initAudioContext()
       // Wait a bit for analyser to be ready
@@ -386,34 +374,34 @@ export default function Contact({ containerRef }) {
     setTimeout(() => {
       delete oscillatorsRef.current[key]
     }, 800)
-  }
+  }, [])
 
-  const getContainerPosition = (e) => {
+  const getContainerPosition = useCallback((e) => {
     const container = e.currentTarget
     const rect = container.getBoundingClientRect()
     const x = e.clientX - rect.left
     const y = e.clientY - rect.top
     return { x, y }
-  }
+  }, [])
 
-  const handleMouseDown = (e) => {
+  const handleMouseDown = useCallback((e) => {
     setIsMouseDown(true)
     const pos = getContainerPosition(e)
     setMousePos(pos)
     playNote(pos.x, pos.y)
-  }
+  }, [getContainerPosition])
 
-  const handleMouseMove = (e) => {
+  const handleMouseMove = useCallback((e) => {
     const pos = getContainerPosition(e)
     setMousePos(pos)
     if (isMouseDown) {
       playNote(pos.x, pos.y)
     }
-  }
+  }, [getContainerPosition, isMouseDown])
 
-  const handleMouseUp = () => {
+  const handleMouseUp = useCallback(() => {
     setIsMouseDown(false)
-  }
+  }, [])
 
   useEffect(() => {
     const updateCanvasSize = () => {
@@ -446,10 +434,6 @@ export default function Contact({ containerRef }) {
     <section 
       id="contact" 
       className="h-full px-4 pt-2 pb-4 flex flex-col relative overflow-hidden"
-      onMouseDown={handleMouseDown}
-      onMouseMove={handleMouseMove}
-      onMouseUp={handleMouseUp}
-      onMouseLeave={handleMouseUp}
     >
       <div 
         id="contact-visualizer"
@@ -465,7 +449,7 @@ export default function Contact({ containerRef }) {
           <pointLight position={[3, 3, 3]} intensity={1} />
           <pointLight position={[-3, -3, -3]} intensity={0.5} />
           <directionalLight position={[0, 5, 0]} intensity={0.3} />
-          <CircularSoundReactor frequencies={frequencies} analyserRef={analyserRef} />
+          <CircularSoundReactor frequencies={frequencies} />
         </Canvas>
         
         {/* 2D Visualizations */}
