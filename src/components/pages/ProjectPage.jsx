@@ -40,9 +40,15 @@ export default function ProjectPage() {
     const originalPath = routeToContentMap[routeKey]
     
     if (originalPath) {
-      // Fetch the HTML content
-      fetch(originalPath)
-        .then(res => res.text())
+      // Fetch the HTML content - ensure index.html is included
+      const fetchPath = originalPath.endsWith('/') ? originalPath + 'index.html' : originalPath
+      fetch(fetchPath)
+        .then(res => {
+          if (!res.ok) {
+            throw new Error(`Failed to load: ${res.status} ${res.statusText}`)
+          }
+          return res.text()
+        })
         .then(html => {
           // Extract the main content from the HTML
           const parser = new DOMParser()
@@ -58,22 +64,25 @@ export default function ProjectPage() {
             const scripts = cleanArticle.querySelectorAll('script')
             scripts.forEach(s => s.remove())
             
-            // Process styles - keep inline styles but remove conflicting ones
+            // Remove scrollTrack element (old scrollbar indicator)
+            const scrollTrack = cleanArticle.querySelector('#scrollTrack')
+            if (scrollTrack) {
+              scrollTrack.remove()
+            }
+            
+            // Process styles - remove all styles
             const styles = cleanArticle.querySelectorAll('style')
             styles.forEach(s => {
-              const styleContent = s.textContent
-              // Remove styles that conflict with our design
-              if (!styleContent.includes('scrollTrack')) {
-                s.remove()
-              }
+              s.remove()
             })
             
             // Update image sources to use absolute paths
             const images = cleanArticle.querySelectorAll('img')
+            const basePath = fetchPath.replace('/index.html', '')
             images.forEach(img => {
               const src = img.getAttribute('src')
               if (src && !src.startsWith('http') && !src.startsWith('/')) {
-                img.setAttribute('src', originalPath.replace('/index.html', '') + src)
+                img.setAttribute('src', basePath + '/' + src)
               } else if (src && src.startsWith('http://localhost:4000')) {
                 img.setAttribute('src', src.replace('http://localhost:4000', ''))
               }
