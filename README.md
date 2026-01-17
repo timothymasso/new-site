@@ -1,61 +1,102 @@
 # Timothy Masso's Website
 
-A static website showcasing performances, projects, and compositions, enhanced with React and Three.js.
+A modern, interactive portfolio website showcasing performances, projects, and compositions. Built with React, Three.js, and Vite.
 
-## Setup
+## 🚀 Quick Start
 
-First, install the dependencies:
+### Prerequisites
+- Node.js 18+ and npm
+
+### Installation
+
 ```bash
+# Install dependencies
 npm install
 ```
 
-## Running the Site
+### Development
 
-### Development Mode (Recommended)
 ```bash
+# Start development server with hot reload
 npm run dev
 ```
-This will start the Vite development server at http://localhost:8000 with hot module replacement.
 
-### Building for Production
+The site will be available at `http://localhost:8000`
+
+### Production Build
+
 ```bash
+# Build for production
 npm run build
-```
-This will create an optimized production build in the `dist/` directory.
 
-### Preview Production Build
-```bash
+# Preview production build
 npm run preview
 ```
-This will serve the production build locally for testing.
 
-### Alternative: Static Server (for production build only)
-After building, you can serve the `dist/` directory using any static file server:
-```bash
-npm run serve
+## 📁 Project Structure
+
 ```
-or
-```bash
-python -m http.server 8000
+/
+├── public/                 # Static assets served as-is
+│   └── content/          # Static HTML content
+│       ├── _performances/
+│       ├── _dataprojects/
+│       └── _aboutme/
+│
+├── src/
+│   ├── components/       # React components
+│   │   ├── layout/      # Layout components (Navigation, Footer)
+│   │   ├── pages/       # Page components (AboutPage, ContactPage)
+│   │   ├── sections/    # Section components (Hero, About, Portfolio)
+│   │   ├── ui/          # Reusable UI components
+│   │   └── effects/      # Visual effects (Dither background)
+│   ├── hooks/            # Custom React hooks
+│   ├── styles/           # CSS stylesheets
+│   ├── utils/            # Utility functions
+│   ├── constants/        # Constants and configuration
+│   ├── App.jsx           # Main app component
+│   └── main.jsx          # Application entry point
+│
+├── assets/               # Legacy assets (images, PDFs, etc.)
+├── docs/                 # Documentation and reference files
+├── index.html            # HTML entry point
+├── vite.config.js        # Vite configuration
+├── tailwind.config.js    # Tailwind CSS configuration
+└── package.json          # Dependencies and scripts
 ```
 
-## Structure
+For detailed structure documentation, see [docs/STRUCTURE.md](./docs/STRUCTURE.md)
 
-- `index.html` - Main homepage
-- `src/` - React source files
-  - `Dither.jsx` - Three.js dithering wave effect component
-  - `main.jsx` - React entry point
-- `assets/` - All site assets (images, CSS, etc.)
-- `_performances/` - Performance pages
-- `_dataprojects/` - Data science projects
-- `_compositions/` - Composition pages
-- `_typewriters/` - Typewriter project pages
-- `_aboutme/` - About me page
+## 🛠️ Technologies
 
-## Technologies
+- **React 18** - UI library
+- **React Router** - Client-side routing
+- **Three.js** - 3D graphics and animations
+- **@react-three/fiber** - React renderer for Three.js
+- **@react-three/postprocessing** - Post-processing effects
+- **Framer Motion** - Animation library
+- **Tailwind CSS** - Utility-first CSS framework
+- **Vite** - Build tool and dev server
 
-- React 18
-- Three.js
-- @react-three/fiber
-- @react-three/postprocessing
-- Vite (build tool)
+## 📝 Scripts
+
+- `npm start` / `npm run dev` - Start development server
+- `npm run build` - Build for production
+- `npm run preview` - Preview production build
+- `npm run serve` - Serve with Python HTTP server
+
+## 🎨 Features
+
+- Interactive Three.js background effects
+- Responsive design
+- Smooth animations and transitions
+- Performance optimized
+- SEO friendly
+
+## 📄 License
+
+MIT
+
+## 👤 Author
+
+Timothy Masso - [GitHub](https://github.com/timothymasso)

@@ -1,7 +1,7 @@
 {
   "name": "timothy-masso-site",
   "version": "1.0.0",
-  "description": "Timothy Masso's personal website",
+  "description": "Timothy Masso's personal website - A modern portfolio showcasing performances, projects, and compositions",
   "type": "module",
   "scripts": {
     "start": "vite",
@@ -9,6 +9,21 @@
     "build": "vite build",
     "preview": "vite preview",
     "serve": "python -m http.server 8000"
+  },
+  "keywords": [
+    "portfolio",
+    "website",
+    "react",
+    "threejs",
+    "music",
+    "performance",
+    "composer"
+  ],
+  "author": "Timothy Masso",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/timothymasso/new-site.git"
   },
   "dependencies": {
     "@react-three/fiber": "^8.15.0",
@@ -30,11 +45,8 @@
     "tailwindcss": "^4.1.18",
     "vite": "^5.0.0"
   },
-  "keywords": [
-    "website",
-    "portfolio",
-    "static-site"
-  ],
-  "author": "Timothy Masso",
-  "license": "MIT"
+  "engines": {
+    "node": ">=18.0.0",
+    "npm": ">=9.0.0"
+  }
 }
