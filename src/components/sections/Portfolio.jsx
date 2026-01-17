@@ -137,7 +137,7 @@ export default function Portfolio({ containerRef }) {
     <section id="portfolio" className="h-full flex flex-col py-4" style={{ paddingLeft: '1rem' }}>
       <div className="mb-4" style={{ paddingRight: '1rem' }}>
         <h2 className="text-2xl md:text-3xl font-light text-white mb-3">
-          <VariableProximity label="Some stuff I made" containerRef={containerRef} radius={90} falloff="gaussian" className="text-2xl md:text-3xl font-light text-white" />
+          <VariableProximity label="Some stuff I made and played" containerRef={containerRef} radius={90} falloff="gaussian" className="text-2xl md:text-3xl font-light text-white" />
         </h2>
         <div className="flex flex-wrap gap-2 mb-4">
           {categories.map((category) => (
