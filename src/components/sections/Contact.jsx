@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef, useMemo, useCallback } from 'react'
 import { Canvas, useFrame } from '@react-three/fiber'
 import * as THREE from 'three'
-import VariableProximity from './VariableProximity'
+import VariableProximity from '../ui/VariableProximity'
 
 function CircularSoundReactor({ frequencies }) {
   const groupRef = useRef()

@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
-import WorkCard from './WorkCard'
-import VariableProximity from './VariableProximity'
+import WorkCard from '../ui/WorkCard'
+import VariableProximity from '../ui/VariableProximity'
 
 // Helper function to get YouTube thumbnail with fallback
 const getYouTubeThumbnail = (videoId) => {

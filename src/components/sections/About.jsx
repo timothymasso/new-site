@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import VariableProximity from './VariableProximity'
-import GradientText from './GradientText'
+import VariableProximity from '../ui/VariableProximity'
+import GradientText from '../ui/GradientText'
 
 const funFacts = [
   "I once wrote a song about a bug in my code",

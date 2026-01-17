@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { useScrollAnimation } from '../hooks/useScrollAnimation'
+import { useScrollAnimation } from '../../hooks/useScrollAnimation'
 import WorkCard from './WorkCard'
 import VariableProximity from './VariableProximity'
 

@@ -1,8 +1,8 @@
 import React, { useRef, useState, useEffect } from 'react'
-import Navigation from './Navigation'
-import Footer from './Footer'
-import ScrollProgress from './ScrollProgress'
-import VariableProximity from './VariableProximity'
+import Navigation from '../layout/Navigation'
+import Footer from '../layout/Footer'
+import ScrollProgress from '../ui/ScrollProgress'
+import VariableProximity from '../ui/VariableProximity'
 
 const casualMessages = [
   "Let's make something cool together",

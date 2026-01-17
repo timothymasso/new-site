@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useCallback, useMemo } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
-import VariableProximity from './VariableProximity'
+import VariableProximity from '../ui/VariableProximity'
 
 const formatTime = (date) => {
   return date.toLocaleTimeString('en-US', { 

@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import VariableProximity from './VariableProximity'
+import VariableProximity from '../ui/VariableProximity'
 
 const casualGreetings = [
   "Hey there!",
