@@ -1,6 +1,14 @@
-import React, { useEffect, useState } from 'react'
-import { Link, useLocation, useNavigate } from 'react-router-dom'
+import React, { useEffect, useState, useCallback, useMemo } from 'react'
+import { useLocation, useNavigate } from 'react-router-dom'
 import VariableProximity from './VariableProximity'
+
+const formatTime = (date) => {
+  return date.toLocaleTimeString('en-US', { 
+    hour: '2-digit', 
+    minute: '2-digit',
+    hour12: true 
+  })
+}
 
 export default function Navigation() {
   const [currentTime, setCurrentTime] = useState(new Date())
@@ -8,7 +16,7 @@ export default function Navigation() {
   const [hoveredLink, setHoveredLink] = useState(null)
   const location = useLocation()
   const navigate = useNavigate()
-  const isHomePage = location.pathname === '/'
+  const isHomePage = useMemo(() => location.pathname === '/', [location.pathname])
 
   useEffect(() => {
     const timer = setInterval(() => {
@@ -25,25 +33,14 @@ export default function Navigation() {
     return () => window.removeEventListener('scroll', handleScroll)
   }, [])
 
-  const handleHomeClick = (e) => {
+  const handleHomeClick = useCallback((e) => {
     if (isHomePage) {
       e.preventDefault()
       window.scrollTo({ top: 0, behavior: 'smooth' })
     }
-  }
+  }, [isHomePage])
 
-  const formatTime = (date) => {
-    const month = date.toLocaleDateString('en-US', { month: 'short' })
-    const day = date.getDate()
-    const hours = date.getHours()
-    const minutes = date.getMinutes()
-    const ampm = hours >= 12 ? 'PM' : 'AM'
-    const displayHours = hours % 12 || 12
-    const displayMinutes = minutes.toString().padStart(2, '0')
-    return `${month} ${day}, ${displayHours}:${displayMinutes} ${ampm}`
-  }
-
-  const scrollToSection = (sectionId) => {
+  const scrollToSection = useCallback((sectionId) => {
     if (isHomePage) {
       const element = document.getElementById(sectionId)
       if (element) {
@@ -91,14 +88,14 @@ export default function Navigation() {
         }
       }, 200)
     }
-  }
+  }, [isHomePage, navigate])
 
-  const navItems = [
+  const navItems = useMemo(() => [
     { id: 'home', label: 'Home', action: () => navigate('/') },
     { id: 'about', label: 'About', action: () => navigate('/about') },
     { id: 'portfolio', label: 'Work', action: () => navigate('/projects') },
     { id: 'contact', label: 'Contact', action: () => navigate('/contact') },
-  ]
+  ], [navigate])
 
   return (
     <nav className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
