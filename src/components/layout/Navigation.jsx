@@ -94,7 +94,6 @@ export default function Navigation() {
     { id: 'home', label: 'Home', action: () => navigate('/') },
     { id: 'about', label: 'About', action: () => navigate('/about') },
     { id: 'portfolio', label: 'Work', action: () => navigate('/projects') },
-    { id: 'contact', label: 'Contact', action: () => navigate('/contact') },
   ], [navigate])
 
   return (

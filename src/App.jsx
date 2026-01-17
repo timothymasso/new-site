@@ -13,7 +13,6 @@ import ScrollProgress from './components/ui/ScrollProgress'
 const ProjectPage = lazy(() => import('./components/pages/ProjectPage'))
 const AboutPage = lazy(() => import('./components/pages/AboutPage'))
 const ProjectsPage = lazy(() => import('./components/pages/ProjectsPage'))
-const ContactPage = lazy(() => import('./components/pages/ContactPage'))
 
 const LoadingFallback = () => (
   <div className="min-h-screen flex items-center justify-center">
@@ -69,7 +68,6 @@ export default function App() {
           <Route path="/" element={<Home />} />
           <Route path="/about" element={<AboutPage />} />
           <Route path="/projects" element={<ProjectsPage />} />
-          <Route path="/contact" element={<ContactPage />} />
           <Route path="/performances/:slug" element={<ProjectPage />} />
           <Route path="/projects/:slug" element={<ProjectPage />} />
           <Route path="/compositions/:slug" element={<ProjectPage />} />
