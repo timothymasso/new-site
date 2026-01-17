@@ -33,7 +33,8 @@ export default function WorkCard({ item, index, containerRef }) {
       <div 
         className="mb-2 overflow-hidden rounded transition-transform duration-300"
         style={{
-          transform: isHovered ? 'scale(1.05)' : 'scale(1)',
+          transform: isHovered ? 'scale(1.03)' : 'scale(1)',
+          transformOrigin: 'center center',
         }}
       >
         <img 
@@ -50,8 +51,8 @@ export default function WorkCard({ item, index, containerRef }) {
         <h3 className="text-xs md:text-sm font-light text-white mb-1 transition-colors group-hover:text-white/80">
           <VariableProximity label={item.title} containerRef={containerRef} radius={90} falloff="gaussian" className="text-xs md:text-sm font-light text-white" />
         </h3>
-        <p className="text-xs text-white/60 font-light">
-          <VariableProximity label={`${item.category}'${item.year.toString().slice(-2)}`} containerRef={containerRef} radius={90} falloff="gaussian" className="text-xs text-white/60 font-light" />
+        <p className="text-xs text-white/90 font-light">
+          <VariableProximity label={`${item.category}'${item.year.toString().slice(-2)}`} containerRef={containerRef} radius={90} falloff="gaussian" className="text-xs text-white/90 font-light" />
         </p>
       </div>
       {isHovered && (

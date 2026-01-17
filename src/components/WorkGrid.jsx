@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import { useScrollAnimation } from '../hooks/useScrollAnimation'
 import WorkCard from './WorkCard'
+import VariableProximity from './VariableProximity'
 
 // Helper function to get YouTube thumbnail with fallback
 const getYouTubeThumbnail = (videoId) => {
@@ -144,7 +145,7 @@ const workWithThumbnails = allWork.map(item => ({
 
 const categories = ['All', 'Performance', 'Data Project', 'Code']
 
-export default function WorkGrid() {
+export default function WorkGrid({ containerRef }) {
   const [ref, isVisible] = useScrollAnimation({ threshold: 0.1, once: true })
   const [selectedCategory, setSelectedCategory] = useState('All')
   const [hoveredCategory, setHoveredCategory] = useState(null)
@@ -169,7 +170,7 @@ export default function WorkGrid() {
                     ? 'text-white bg-white/20 scale-110'
                     : hoveredCategory === category
                     ? 'text-white/90 bg-white/10 scale-105'
-                    : 'text-white/60 hover:text-white/80'
+                    : 'text-white/90 hover:text-white'
                 }`}
                 style={{
                   transform: hoveredCategory === category && selectedCategory !== category ? 'scale(1.05)' : selectedCategory === category ? 'scale(1.1)' : 'scale(1)',
@@ -177,17 +178,17 @@ export default function WorkGrid() {
                   fontFamily: category === 'Code' ? 'ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, "Liberation Mono", monospace' : 'inherit'
                 }}
               >
-                {category === 'Code' ? '<> Code' : category}
+                <VariableProximity label={category === 'Code' ? '<> Code' : category} containerRef={containerRef} radius={90} falloff="gaussian" className="text-xs md:text-sm font-light" />
               </button>
             ))}
           </div>
-          <p className="text-xs text-white/40">
-            {filteredWork.length} {filteredWork.length === 1 ? 'thing' : 'things'} found
+          <p className="text-xs text-white/90">
+            <VariableProximity label={`${filteredWork.length} ${filteredWork.length === 1 ? 'thing' : 'things'} found`} containerRef={containerRef} radius={90} falloff="gaussian" className="text-xs text-white/90" />
           </p>
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
           {filteredWork.map((item, index) => (
-            <WorkCard key={index} item={item} index={index} />
+            <WorkCard key={index} item={item} index={index} containerRef={containerRef} />
           ))}
         </div>
       </div>

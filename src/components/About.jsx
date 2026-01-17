@@ -31,9 +31,9 @@ export default function About({ containerRef }) {
       >
         <VariableProximity label="About me" containerRef={containerRef} radius={90} falloff="gaussian" className="text-xl md:text-2xl font-light text-white" />
       </h2>
-      <div className="text-xs md:text-sm text-white/80 font-light leading-relaxed">
+      <div className="text-xs md:text-sm text-white font-light leading-relaxed">
         <p>
-          <VariableProximity label="I'm a musician who got into coding, or maybe a coder who got into music? Either way, I like making cool stuff." containerRef={containerRef} radius={60} falloff="gaussian" className="text-xs md:text-sm text-white/80 font-light" />
+          <VariableProximity label="I'm a musician who got into coding, or maybe a coder who got into music? Either way, I like making cool stuff." containerRef={containerRef} radius={60} falloff="gaussian" className="text-xs md:text-sm text-white font-light" />
         </p>
       </div>
     </section>

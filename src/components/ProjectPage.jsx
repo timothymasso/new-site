@@ -1,7 +1,9 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useRef } from 'react'
+import { createRoot } from 'react-dom/client'
 import { useParams, useNavigate } from 'react-router-dom'
 import Navigation from './Navigation'
 import Footer from './Footer'
+import VariableProximity from './VariableProximity'
 
 // Map of routes to their original HTML content paths
 const routeToContentMap = {
@@ -27,6 +29,8 @@ export default function ProjectPage() {
   const [content, setContent] = useState('')
   const [title, setTitle] = useState('')
   const [loading, setLoading] = useState(true)
+  const containerRef = useRef(null)
+  const contentRef = useRef(null)
 
   useEffect(() => {
     // Determine the route key
@@ -84,6 +88,20 @@ export default function ProjectPage() {
               }
             })
             
+            // Process text nodes to add VariableProximity data attributes
+            const textElements = cleanArticle.querySelectorAll('h1, h2, h3, h4, h5, h6, p, li, td, th, blockquote, a, span:not([class*="code"]):not([class*="pre"])')
+            textElements.forEach(el => {
+              // Skip if element contains code or pre elements
+              if (el.querySelector('code, pre')) return
+              
+              // Skip if element is empty or only whitespace
+              if (!el.textContent || !el.textContent.trim()) return
+              
+              // Add data attribute to mark for VariableProximity
+              el.setAttribute('data-variable-proximity', 'true')
+              el.setAttribute('data-text-content', el.textContent.trim())
+            })
+            
             setContent(cleanArticle.innerHTML)
             setTitle(pageTitle)
           } else {
@@ -102,6 +120,46 @@ export default function ProjectPage() {
     }
   }, [category, slug])
 
+  // Apply VariableProximity to loaded content
+  useEffect(() => {
+    if (!content || !contentRef.current) return
+
+    const elements = contentRef.current.querySelectorAll('[data-variable-proximity="true"]')
+    
+    elements.forEach(el => {
+      const textContent = el.getAttribute('data-text-content')
+      if (!textContent) return
+      
+      // Skip if already processed
+      if (el.hasAttribute('data-proximity-processed')) return
+      
+      // Store original content and clear
+      const originalHTML = el.innerHTML
+      const classes = el.className
+      
+      // Create a container for the VariableProximity component
+      const container = document.createElement('span')
+      container.style.display = 'inline'
+      
+      // Create root and render VariableProximity
+      const root = createRoot(container)
+      root.render(
+        <VariableProximity 
+          label={textContent} 
+          containerRef={containerRef} 
+          radius={90} 
+          falloff="gaussian" 
+          className={classes}
+        />
+      )
+      
+      // Replace element's content
+      el.innerHTML = ''
+      el.appendChild(container)
+      el.setAttribute('data-proximity-processed', 'true')
+    })
+  }, [content])
+
   if (loading) {
     return (
       <div className="relative z-10 pointer-events-none min-h-screen">
@@ -109,20 +167,21 @@ export default function ProjectPage() {
           <Navigation />
         </div>
         <div className="pointer-events-auto min-h-screen flex items-center justify-center">
-          <p className="text-white/60 font-light">Loading...</p>
+          <p className="text-white font-light">Loading...</p>
         </div>
       </div>
     )
   }
 
   return (
-    <div className="relative z-10 pointer-events-none min-h-screen">
+    <div className="relative z-10 pointer-events-none min-h-screen" ref={containerRef}>
       <div className="pointer-events-auto">
         <Navigation />
       </div>
       <div className="pointer-events-auto">
         <div className="max-w-6xl mx-auto px-6 md:px-12 py-12 md:py-20 pt-24 md:pt-28">
           <article 
+            ref={contentRef}
             className="project-content"
             dangerouslySetInnerHTML={{ __html: content }}
           />
@@ -221,7 +280,7 @@ export default function ProjectPage() {
             
             .project-content p {
               margin-bottom: 1.25rem;
-              color: rgba(255, 255, 255, 0.8);
+              color: rgba(255, 255, 255, 0.95);
               font-weight: 300;
               max-width: 60ch;
               position: relative;
@@ -230,7 +289,7 @@ export default function ProjectPage() {
             .project-content p:first-of-type {
               font-size: clamp(1rem, 1.8vw, 1.2rem);
               line-height: 1.75;
-              color: rgba(255, 255, 255, 0.95);
+              color: white;
               margin-bottom: 2.5rem;
               max-width: 70ch;
               padding-left: 1.5rem;
@@ -312,7 +371,7 @@ export default function ProjectPage() {
             .project-content ul, .project-content ol {
               margin: 2rem 0;
               padding-left: 2.5rem;
-              color: rgba(255, 255, 255, 0.8);
+              color: rgba(255, 255, 255, 0.95);
               list-style: none;
               position: relative;
             }
@@ -321,7 +380,7 @@ export default function ProjectPage() {
               content: '→';
               position: absolute;
               left: -1.5rem;
-              color: rgba(255, 255, 255, 0.3);
+              color: rgba(255, 255, 255, 0.5);
             }
             
             .project-content li {
@@ -386,7 +445,7 @@ export default function ProjectPage() {
             .project-content td {
               padding: 1rem 0.75rem;
               border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-              color: rgba(255, 255, 255, 0.8);
+              color: rgba(255, 255, 255, 0.95);
             }
             
             .project-content tr:hover {
@@ -397,7 +456,7 @@ export default function ProjectPage() {
               border-left: 4px solid rgba(255, 255, 255, 0.2);
               padding-left: 1.5rem;
               margin: 2rem 0;
-              color: rgba(255, 255, 255, 0.7);
+              color: rgba(255, 255, 255, 0.9);
               font-style: italic;
               transform: rotate(0.2deg);
               margin-left: 1.5rem;

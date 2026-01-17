@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
+import VariableProximity from './VariableProximity'
 
 export default function Navigation() {
   const [currentTime, setCurrentTime] = useState(new Date())
@@ -96,7 +97,7 @@ export default function Navigation() {
     { id: 'home', label: 'Home', action: () => navigate('/') },
     { id: 'about', label: 'About', action: () => navigate('/about') },
     { id: 'portfolio', label: 'Work', action: () => navigate('/projects') },
-    { id: 'contact', label: 'Contact', action: () => scrollToSection('contact') },
+    { id: 'contact', label: 'Contact', action: () => navigate('/contact') },
   ]
 
   return (
@@ -118,14 +119,14 @@ export default function Navigation() {
                   transition: 'all 0.2s ease'
                 }}
               >
-                {item.label}
+                <VariableProximity label={item.label} containerRef={null} radius={90} falloff="gaussian" className="text-sm font-light" />
                 {hoveredLink === item.id && (
                   <span className="absolute -bottom-1 left-0 right-0 h-0.5 bg-white animate-pulse" />
                 )}
               </button>
             ))}
-            <div className="text-xs text-white/80 font-light ml-6">
-              {formatTime(currentTime)}
+            <div className="text-xs text-white/95 font-light ml-6">
+              <VariableProximity label={formatTime(currentTime)} containerRef={null} radius={90} falloff="gaussian" className="text-xs text-white/95 font-light" />
             </div>
           </div>
         </div>

@@ -46,18 +46,18 @@ export default function Contact({ containerRef }) {
       <h2 className="text-2xl md:text-3xl font-light text-white mb-4">
         <VariableProximity label="Say hi" containerRef={containerRef} radius={90} falloff="gaussian" className="text-2xl md:text-3xl font-light text-white" />
       </h2>
-      <p className="text-sm text-white/60 mb-4 animate-fade-in">
-        <VariableProximity label={casualMessages[messageIndex]} containerRef={containerRef} radius={90} falloff="gaussian" className="text-sm text-white/60" />
+      <p className="text-sm text-white mb-4 animate-fade-in">
+        <VariableProximity label={casualMessages[messageIndex]} containerRef={containerRef} radius={90} falloff="gaussian" className="text-sm text-white" />
       </p>
       <div className="space-y-2 mb-4">
         <a 
           href="mailto:timothy.masso@gmail.com" 
-          className="text-white/70 hover:text-white transition-colors font-light text-sm block hover:translate-x-1 transition-transform"
+          className="text-white hover:text-white transition-colors font-light text-sm block hover:translate-x-1 transition-transform"
         >
           <VariableProximity label="timothy.masso@gmail.com" containerRef={containerRef} radius={90} falloff="gaussian" className="text-sm font-light" />
         </a>
-        <p className="text-white/50 font-light text-xs">
-          <VariableProximity label="NYC area" containerRef={containerRef} radius={90} falloff="gaussian" className="text-xs text-white/50 font-light" />
+        <p className="text-white/90 font-light text-xs">
+          <VariableProximity label="NYC area" containerRef={containerRef} radius={90} falloff="gaussian" className="text-xs text-white/90 font-light" />
         </p>
       </div>
       <form onSubmit={handleSubmit} className="space-y-2">
@@ -67,7 +67,7 @@ export default function Contact({ containerRef }) {
           placeholder="Your name"
           value={formData.name}
           onChange={handleChange}
-          className="w-full px-3 py-2 text-sm bg-white/10 border border-white/20 text-white placeholder-white/50 font-light focus:outline-none focus:border-white/40 focus:bg-white/15 transition-all rounded"
+          className="w-full px-3 py-2 text-sm bg-white/10 border border-white/20 text-white placeholder-white/85 font-light focus:outline-none focus:border-white/40 focus:bg-white/15 transition-all rounded"
           required
         />
         <input
@@ -76,7 +76,7 @@ export default function Contact({ containerRef }) {
           placeholder="Your email"
           value={formData.email}
           onChange={handleChange}
-          className="w-full px-3 py-2 text-sm bg-white/10 border border-white/20 text-white placeholder-white/50 font-light focus:outline-none focus:border-white/40 focus:bg-white/15 transition-all rounded"
+          className="w-full px-3 py-2 text-sm bg-white/10 border border-white/20 text-white placeholder-white/85 font-light focus:outline-none focus:border-white/40 focus:bg-white/15 transition-all rounded"
           required
         />
         <textarea
@@ -85,7 +85,7 @@ export default function Contact({ containerRef }) {
           value={formData.message}
           onChange={handleChange}
           rows="3"
-          className="w-full px-3 py-2 text-sm bg-white/10 border border-white/20 text-white placeholder-white/50 font-light focus:outline-none focus:border-white/40 focus:bg-white/15 transition-all resize-none rounded"
+          className="w-full px-3 py-2 text-sm bg-white/10 border border-white/20 text-white placeholder-white/85 font-light focus:outline-none focus:border-white/40 focus:bg-white/15 transition-all resize-none rounded"
           required
         />
         <button

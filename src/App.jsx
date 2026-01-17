@@ -36,7 +36,7 @@ function Home() {
           <div className="col-span-12 md:col-span-4 row-start-1 row-span-2 border border-white/30 flex items-start self-start" style={{ minHeight: 0, height: 'auto' }}>
             <Hero containerRef={containerRef} />
           </div>
-          <div className="col-span-12 md:col-span-8 row-start-1 row-span-6 overflow-y-auto border border-white/30" style={{ minHeight: 0 }}>
+          <div className="col-span-12 md:col-span-8 row-start-1 row-span-6 overflow-y-auto overflow-x-hidden border border-white/30" style={{ minHeight: 0 }}>
             <Portfolio containerRef={containerRef} />
           </div>
           <div className="col-span-12 md:col-span-4 row-start-4 row-span-1 overflow-hidden pb-0 border border-white/30" style={{ marginBottom: 0, paddingBottom: 0, minHeight: 0 }}>

@@ -134,8 +134,8 @@ export default function Portfolio({ containerRef }) {
     : workWithThumbnails.filter(item => item.category === selectedCategory)
 
   return (
-    <section id="portfolio" className="h-full px-4 py-4">
-      <div className="mb-4">
+    <section id="portfolio" className="h-full flex flex-col py-4" style={{ paddingLeft: '1rem' }}>
+      <div className="mb-4" style={{ paddingRight: '1rem' }}>
         <h2 className="text-2xl md:text-3xl font-light text-white mb-3">
           <VariableProximity label="Some stuff I made" containerRef={containerRef} radius={90} falloff="gaussian" className="text-2xl md:text-3xl font-light text-white" />
         </h2>
@@ -151,7 +151,7 @@ export default function Portfolio({ containerRef }) {
                   ? 'text-white bg-white/20 scale-110'
                   : hoveredCategory === category
                   ? 'text-white/90 bg-white/10 scale-105'
-                  : 'text-white/60 hover:text-white/80'
+                  : 'text-white/90 hover:text-white'
               }`}
               style={{
                 transform: hoveredCategory === category && selectedCategory !== category ? 'scale(1.05)' : selectedCategory === category ? 'scale(1.1)' : 'scale(1)',
@@ -169,20 +169,22 @@ export default function Portfolio({ containerRef }) {
             </button>
           ))}
         </div>
-        <p className="text-xs text-white/40 mb-2">
+        <p className="text-xs text-white/90 mb-2">
           <VariableProximity 
             label={`${filteredWork.length} ${filteredWork.length === 1 ? 'thing' : 'things'} found`} 
             containerRef={containerRef} 
             radius={90} 
             falloff="gaussian" 
-            className="text-xs text-white/40"
+            className="text-xs text-white/90"
           />
         </p>
       </div>
-      <div className="grid grid-cols-2 md:grid-cols-3 gap-3 md:gap-4 overflow-y-auto max-h-[calc(100%-120px)]" style={{ WebkitOverflowScrolling: 'touch', willChange: 'scroll-position' }}>
-        {filteredWork.map((item, index) => (
-          <WorkCard key={index} item={item} index={index} containerRef={containerRef} />
-        ))}
+      <div className="overflow-y-auto overflow-x-hidden flex-1" style={{ WebkitOverflowScrolling: 'touch', willChange: 'scroll-position' }}>
+        <div className="grid grid-cols-2 md:grid-cols-3 gap-3 md:gap-4" style={{ paddingRight: '1rem', paddingTop: '1rem', paddingBottom: '1rem' }}>
+          {filteredWork.map((item, index) => (
+            <WorkCard key={index} item={item} index={index} containerRef={containerRef} />
+          ))}
+        </div>
       </div>
     </section>
   )

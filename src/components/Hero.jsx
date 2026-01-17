@@ -52,23 +52,23 @@ export default function Hero({ containerRef }) {
           <br />
           <VariableProximity label="I'm Timothy." containerRef={containerRef} radius={90} falloff="gaussian" className="text-5xl md:text-6xl lg:text-7xl font-light text-white" />
         </h1>
-        <p className="text-lg md:text-xl text-white/70 font-light mt-2">
-          <VariableProximity label="I make sounds, code stuff, and sometimes both at the same time" containerRef={containerRef} radius={90} falloff="gaussian" className="text-lg md:text-xl text-white/70 font-light" />
+        <p className="text-lg md:text-xl text-white font-light mt-2">
+          <VariableProximity label="I make sounds, code stuff, and sometimes both at the same time" containerRef={containerRef} radius={90} falloff="gaussian" className="text-lg md:text-xl text-white font-light" />
         </p>
         <div className="mt-3 flex gap-3 flex-wrap">
-          <span className="text-sm text-white/50 font-light">
-            <VariableProximity label="currently:" containerRef={containerRef} radius={90} falloff="gaussian" className="text-sm text-white/50 font-light" />
+          <span className="text-sm text-white/85 font-light">
+            <VariableProximity label="currently:" containerRef={containerRef} radius={90} falloff="gaussian" className="text-sm text-white/85 font-light" />
           </span>
-          <span className="text-sm text-white/70 font-light animate-pulse">
-            <VariableProximity label="making music" containerRef={containerRef} radius={90} falloff="gaussian" className="text-sm text-white/70 font-light" />
+          <span className="text-sm text-white font-light animate-pulse">
+            <VariableProximity label="making music" containerRef={containerRef} radius={90} falloff="gaussian" className="text-sm text-white font-light" />
           </span>
-          <span className="text-sm text-white/50 font-light">•</span>
-          <span className="text-sm text-white/70 font-light animate-pulse" style={{ animationDelay: '1s' }}>
-            <VariableProximity label="coding things" containerRef={containerRef} radius={90} falloff="gaussian" className="text-sm text-white/70 font-light" />
+          <span className="text-sm text-white/85 font-light">•</span>
+          <span className="text-sm text-white font-light animate-pulse" style={{ animationDelay: '1s' }}>
+            <VariableProximity label="coding things" containerRef={containerRef} radius={90} falloff="gaussian" className="text-sm text-white font-light" />
           </span>
-          <span className="text-sm text-white/50 font-light">•</span>
-          <span className="text-sm text-white/70 font-light animate-pulse" style={{ animationDelay: '2s' }}>
-            <VariableProximity label="vibing" containerRef={containerRef} radius={90} falloff="gaussian" className="text-sm text-white/70 font-light" />
+          <span className="text-sm text-white/85 font-light">•</span>
+          <span className="text-sm text-white font-light animate-pulse" style={{ animationDelay: '2s' }}>
+            <VariableProximity label="vibing" containerRef={containerRef} radius={90} falloff="gaussian" className="text-sm text-white font-light" />
           </span>
         </div>
       </div>
