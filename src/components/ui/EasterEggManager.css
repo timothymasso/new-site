@@ -1,0 +1,149 @@
+/* Easter Egg Message */
+.easter-egg-message {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) scale(0.8);
+  z-index: 10000;
+  opacity: 0;
+  transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+  pointer-events: none;
+}
+
+.easter-egg-message.show {
+  opacity: 1;
+  transform: translate(-50%, -50%) scale(1);
+}
+
+.easter-egg-content {
+  background: rgba(0, 0, 0, 0.95);
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-radius: 12px;
+  padding: 2rem;
+  text-align: center;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5),
+              0 0 40px rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  max-width: 400px;
+  min-width: 300px;
+}
+
+.easter-egg-content h3 {
+  color: white;
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin: 0 0 1rem 0;
+  font-family: 'Outfit', sans-serif;
+}
+
+.easter-egg-content p {
+  color: rgba(255, 255, 255, 0.9);
+  font-size: 0.95rem;
+  line-height: 1.6;
+  margin: 0;
+  white-space: pre-line;
+  font-family: 'Sora', sans-serif;
+}
+
+/* Floating Emojis */
+.floating-emoji {
+  position: fixed;
+  font-size: 2rem;
+  z-index: 9999;
+  pointer-events: none;
+  opacity: 0;
+  transform: translateY(0) scale(0);
+  transition: all 0.3s ease-out;
+}
+
+.floating-emoji.float {
+  opacity: 1;
+  transform: translateY(-100px) scale(1) rotate(360deg);
+}
+
+/* Confetti Animation */
+@keyframes confetti-fall {
+  0% {
+    transform: translateY(0) rotate(0deg);
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(100vh) rotate(720deg);
+    opacity: 0;
+  }
+}
+
+.confetti-piece {
+  position: fixed;
+  pointer-events: none;
+  z-index: 9999;
+}
+
+/* Rainbow Mode */
+.rainbow-mode {
+  animation: rainbow-shift 3s linear infinite;
+}
+
+@keyframes rainbow-shift {
+  0% {
+    filter: hue-rotate(0deg);
+  }
+  100% {
+    filter: hue-rotate(360deg);
+  }
+}
+
+/* Disco Mode */
+.disco-mode {
+  animation: disco-pulse 1s ease-in-out infinite;
+}
+
+@keyframes disco-pulse {
+  0%, 100% {
+    filter: brightness(1) saturate(1);
+  }
+  50% {
+    filter: brightness(1.3) saturate(1.5);
+  }
+}
+
+.disco-mode * {
+  animation: disco-color-shift 2s linear infinite;
+}
+
+@keyframes disco-color-shift {
+  0% {
+    filter: hue-rotate(0deg);
+  }
+  100% {
+    filter: hue-rotate(360deg);
+  }
+}
+
+/* Rainbow background animation */
+@keyframes rainbow {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+/* Title click effect */
+h1.crown-effect {
+  text-shadow: 0 0 20px gold, 0 0 40px gold, 0 0 60px gold !important;
+  animation: crown-glow 2s ease-in-out infinite;
+}
+
+@keyframes crown-glow {
+  0%, 100% {
+    text-shadow: 0 0 20px gold, 0 0 40px gold, 0 0 60px gold;
+  }
+  50% {
+    text-shadow: 0 0 30px gold, 0 0 60px gold, 0 0 90px gold;
+  }
+}
