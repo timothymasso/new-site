@@ -108,9 +108,17 @@ export default function Navigation() {
     <nav className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
       scrolled ? 'bg-black/40 backdrop-blur-lg border-b border-white/20' : 'bg-transparent'
     }`}>
-      <div className="w-full px-6 py-4">
+      <div className="w-full" style={{ 
+        paddingLeft: 'clamp(1rem, 3vw, 2rem)',
+        paddingRight: 'clamp(1rem, 3vw, 2rem)',
+        paddingTop: 'clamp(0.75rem, 2vh, 1.5rem)',
+        paddingBottom: 'clamp(0.75rem, 2vh, 1.5rem)'
+      }}>
         <div className="flex items-center justify-between">
-          <div className="flex items-center space-x-6 text-sm text-white font-light">
+          <div className="flex items-center text-white font-light" style={{ 
+            gap: 'clamp(1rem, 3vw, 2rem)',
+            fontSize: 'clamp(0.75rem, 1.75vw, 0.875rem)'
+          }}>
             {navItems.map((item) => (
               <button
                 key={item.id}
@@ -120,19 +128,26 @@ export default function Navigation() {
                 className="hover:opacity-70 transition-all cursor-pointer relative"
                 style={{
                   transform: hoveredLink === item.id ? 'translateY(-2px)' : 'none',
-                  transition: 'all 0.2s ease'
+                  transition: 'all 0.2s ease',
+                  fontSize: 'clamp(0.75rem, 1.75vw, 0.875rem)'
                 }}
               >
-                <VariableProximity label={item.label} containerRef={null} radius={90} falloff="gaussian" className="text-sm font-light" />
+                <VariableProximity label={item.label} containerRef={null} radius={90} falloff="gaussian" className="font-light" style={{ fontSize: 'clamp(0.75rem, 1.75vw, 0.875rem)' }} />
                 {hoveredLink === item.id && (
-                  <span className="absolute -bottom-1 left-0 right-0 h-0.5 bg-white animate-pulse" />
+                  <span className="absolute left-0 right-0 bg-white animate-pulse" style={{ 
+                    bottom: '-0.125rem',
+                    height: 'clamp(1px, 0.1vh, 2px)'
+                  }} />
                 )}
               </button>
             ))}
           </div>
-          <div className="text-xs text-white/95 font-light flex items-center gap-2">
-            <VariableProximity label={formatDate(currentTime)} containerRef={null} radius={90} falloff="gaussian" className="text-xs text-white/95 font-light" />
-            <VariableProximity label={formatTime(currentTime)} containerRef={null} radius={90} falloff="gaussian" className="text-xs text-white/95 font-light" />
+          <div className="text-white/95 font-light flex items-center" style={{ 
+            gap: 'clamp(0.375rem, 1vw, 0.75rem)',
+            fontSize: 'clamp(0.625rem, 1.5vw, 0.75rem)'
+          }}>
+            <VariableProximity label={formatDate(currentTime)} containerRef={null} radius={90} falloff="gaussian" className="text-white/95 font-light" style={{ fontSize: 'clamp(0.625rem, 1.5vw, 0.75rem)' }} />
+            <VariableProximity label={formatTime(currentTime)} containerRef={null} radius={90} falloff="gaussian" className="text-white/95 font-light" style={{ fontSize: 'clamp(0.625rem, 1.5vw, 0.75rem)' }} />
           </div>
         </div>
       </div>

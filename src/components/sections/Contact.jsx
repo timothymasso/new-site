@@ -2,6 +2,8 @@ import React, { useState, useEffect, useRef, useMemo, useCallback } from 'react'
 import { Canvas, useFrame } from '@react-three/fiber'
 import * as THREE from 'three'
 import VariableProximity from '../ui/VariableProximity'
+import ElasticSlider from '../ui/ElasticSlider'
+import DrumPatternMaker from '../ui/DrumPatternMaker'
 
 function CircularSoundReactor({ frequencies }) {
   const groupRef = useRef()
@@ -108,6 +110,7 @@ export default function Contact({ containerRef }) {
   const [isMouseDown, setIsMouseDown] = useState(false)
   const [frequencies, setFrequencies] = useState(new Uint8Array(32))
   const [waveform, setWaveform] = useState(new Uint8Array(32))
+  const [volume, setVolume] = useState(0.5) // Volume control (0-1), slider uses 0-100
   const freqCanvasRef = useRef(null)
   const waveformCanvasRef = useRef(null)
   const eqCanvasRef = useRef(null)
@@ -127,13 +130,16 @@ export default function Contact({ containerRef }) {
       const ctx = canvas.getContext('2d')
       if (!ctx) return
       
-      const width = canvas.width
-      const height = canvas.height
+      let width = canvas.width
+      let height = canvas.height
       
       if (width === 0 || height === 0) {
-        canvas.width = 75
-        canvas.height = 80
-        return
+        const vw = window.innerWidth / 100
+        const vh = window.innerHeight / 100
+        width = Math.max(50, Math.min(75, 8 * vw))
+        height = Math.max(60, Math.min(80, 8 * vh))
+        canvas.width = width
+        canvas.height = height
       }
       
       ctx.clearRect(0, 0, width, height)
@@ -170,13 +176,16 @@ export default function Contact({ containerRef }) {
       const ctx = canvas.getContext('2d')
       if (!ctx) return
       
-      const width = canvas.width
-      const height = canvas.height
+      let width = canvas.width
+      let height = canvas.height
       
       if (width === 0 || height === 0) {
-        canvas.width = 120
-        canvas.height = 100
-        return
+        const vw = window.innerWidth / 100
+        const vh = window.innerHeight / 100
+        width = Math.max(80, Math.min(120, 12 * vw))
+        height = Math.max(70, Math.min(100, 10 * vh))
+        canvas.width = width
+        canvas.height = height
       }
       
       ctx.clearRect(0, 0, width, height)
@@ -214,13 +223,16 @@ export default function Contact({ containerRef }) {
       const ctx = canvas.getContext('2d')
       if (!ctx) return
       
-      const width = canvas.width
-      const height = canvas.height
+      let width = canvas.width
+      let height = canvas.height
       
       if (width === 0 || height === 0) {
-        canvas.width = 120
-        canvas.height = 100
-        return
+        const vw = window.innerWidth / 100
+        const vh = window.innerHeight / 100
+        width = Math.max(80, Math.min(120, 12 * vw))
+        height = Math.max(70, Math.min(100, 10 * vh))
+        canvas.width = width
+        canvas.height = height
       }
       
       ctx.clearRect(0, 0, width, height)
@@ -309,7 +321,7 @@ export default function Contact({ containerRef }) {
     }
   }, [])
 
-  const playNote = useCallback(async (x, y) => {
+  const playNote = useCallback(async (x, y, shouldHold = false) => {
     if (!audioContextRef.current || !analyserRef.current) {
       await initAudioContext()
       // Wait a bit for analyser to be ready
@@ -317,14 +329,6 @@ export default function Contact({ containerRef }) {
     }
 
     if (!audioContextRef.current || !analyserRef.current) return
-
-    const key = `${x},${y}`
-    
-    // Stop existing oscillator at this position
-    if (oscillatorsRef.current[key]) {
-      oscillatorsRef.current[key].oscillator.stop()
-      oscillatorsRef.current[key].gainNode.disconnect()
-    }
 
     const container = document.getElementById('contact-visualizer')
     if (!container) return
@@ -337,24 +341,147 @@ export default function Contact({ containerRef }) {
     const normalizedYHigh = normalizedY * normalizedY
     const baseFreq = 220 // A3 (higher starting point)
     const semitones = Math.floor(normalizedYHigh * 36) // 3 octaves, favoring highs
-    const frequency = baseFreq * Math.pow(2, semitones / 12)
+    
+    const rootFreq = baseFreq * Math.pow(2, semitones / 12)
+    
+    // Map X position to chord type (divide into 8 regions)
+    const chordTypeIndex = Math.floor(normalizedX * 8)
+    let frequencies = []
+    
+    // Calculate frequencies based on chord type
+    switch (chordTypeIndex) {
+      case 0: // Major triad
+        frequencies = [
+          rootFreq,
+          rootFreq * Math.pow(2, 4 / 12),  // Major third
+          rootFreq * Math.pow(2, 7 / 12)   // Perfect fifth
+        ]
+        break
+      case 1: // Minor triad
+        frequencies = [
+          rootFreq,
+          rootFreq * Math.pow(2, 3 / 12),  // Minor third
+          rootFreq * Math.pow(2, 7 / 12)   // Perfect fifth
+        ]
+        break
+      case 2: // Dominant 7th
+        frequencies = [
+          rootFreq,
+          rootFreq * Math.pow(2, 4 / 12),  // Major third
+          rootFreq * Math.pow(2, 7 / 12), // Perfect fifth
+          rootFreq * Math.pow(2, 10 / 12)  // Minor seventh
+        ]
+        break
+      case 3: // Major 7th
+        frequencies = [
+          rootFreq,
+          rootFreq * Math.pow(2, 4 / 12),  // Major third
+          rootFreq * Math.pow(2, 7 / 12),  // Perfect fifth
+          rootFreq * Math.pow(2, 11 / 12)  // Major seventh
+        ]
+        break
+      case 4: // Minor 7th
+        frequencies = [
+          rootFreq,
+          rootFreq * Math.pow(2, 3 / 12),  // Minor third
+          rootFreq * Math.pow(2, 7 / 12),  // Perfect fifth
+          rootFreq * Math.pow(2, 10 / 12)  // Minor seventh
+        ]
+        break
+      case 5: // Suspended 4th (sus4)
+        frequencies = [
+          rootFreq,
+          rootFreq * Math.pow(2, 5 / 12),  // Perfect fourth
+          rootFreq * Math.pow(2, 7 / 12)   // Perfect fifth
+        ]
+        break
+      case 6: // Diminished triad
+        frequencies = [
+          rootFreq,
+          rootFreq * Math.pow(2, 3 / 12),  // Minor third
+          rootFreq * Math.pow(2, 6 / 12)   // Diminished fifth
+        ]
+        break
+      case 7: // Augmented triad
+        frequencies = [
+          rootFreq,
+          rootFreq * Math.pow(2, 4 / 12),  // Major third
+          rootFreq * Math.pow(2, 8 / 12)   // Augmented fifth
+        ]
+        break
+      default:
+        frequencies = [rootFreq]
+    }
     
     // Map X position to wave type
     const waveTypes = ['sine', 'square', 'sawtooth', 'triangle']
     const waveType = waveTypes[Math.floor(normalizedX * waveTypes.length)]
     
-    const oscillator = audioContextRef.current.createOscillator()
-    const gainNode = audioContextRef.current.createGain()
+    // Use a single key for the active note when holding
+    const key = shouldHold ? 'active' : `${x},${y}`
     
-    oscillator.type = waveType
-    oscillator.frequency.setValueAtTime(frequency, audioContextRef.current.currentTime)
+    // If holding and oscillators exist, update frequencies and wave type
+    if (shouldHold && oscillatorsRef.current[key]) {
+      const { oscillators, gainNodes } = oscillatorsRef.current[key]
+      // If number of frequencies changed, recreate oscillators
+      if (oscillators.length !== frequencies.length) {
+        // Stop old oscillators
+        oscillators.forEach(osc => osc.stop())
+        gainNodes.forEach(gain => gain.disconnect())
+        // Will fall through to create new ones
+      } else {
+        // Update frequencies and volume for all oscillators
+        frequencies.forEach((freq, index) => {
+          oscillators[index].frequency.setValueAtTime(freq, audioContextRef.current.currentTime)
+          const baseVolume = index === 0 ? 0.2 : 0.13
+          const adjustedVolume = baseVolume * volume
+          gainNodes[index].gain.setValueAtTime(adjustedVolume, audioContextRef.current.currentTime)
+        })
+        oscillators.forEach(osc => {
+          osc.type = waveType
+        })
+        return
+      }
+    }
     
-    gainNode.gain.setValueAtTime(0.2, audioContextRef.current.currentTime)
-    gainNode.gain.exponentialRampToValueAtTime(0.01, audioContextRef.current.currentTime + 0.8)
+    // Stop existing oscillators at this position
+    if (oscillatorsRef.current[key]) {
+      const { oscillators, gainNodes } = oscillatorsRef.current[key]
+      oscillators.forEach(osc => osc.stop())
+      gainNodes.forEach(gain => gain.disconnect())
+    }
     
-    // Connect through analyser
-    oscillator.connect(gainNode)
-    gainNode.connect(analyserRef.current)
+    // Create oscillators for the chord (number depends on chord type)
+    const oscillators = []
+    const gainNodes = []
+    
+    frequencies.forEach((frequency, index) => {
+      const oscillator = audioContextRef.current.createOscillator()
+      const gainNode = audioContextRef.current.createGain()
+      
+      oscillator.type = waveType
+      oscillator.frequency.setValueAtTime(frequency, audioContextRef.current.currentTime)
+      
+      // Balance volumes: root loudest, others slightly quieter
+      const baseVolume = index === 0 ? 0.2 : 0.13
+      const adjustedVolume = baseVolume * volume
+      
+      if (shouldHold) {
+        // Keep note playing while held
+        gainNode.gain.setValueAtTime(adjustedVolume, audioContextRef.current.currentTime)
+      } else {
+        // Fade out for click
+        gainNode.gain.setValueAtTime(adjustedVolume, audioContextRef.current.currentTime)
+        gainNode.gain.exponentialRampToValueAtTime(0.01, audioContextRef.current.currentTime + 0.8)
+      }
+      
+      // Connect through analyser
+      oscillator.connect(gainNode)
+      gainNode.connect(analyserRef.current)
+      
+      oscillators.push(oscillator)
+      gainNodes.push(gainNode)
+    })
     
     // Make sure analyser is connected to destination (only once)
     if (!analyserRef.current._connected) {
@@ -362,19 +489,24 @@ export default function Contact({ containerRef }) {
       analyserRef.current._connected = true
     }
     
-    oscillator.start()
-    oscillator.stop(audioContextRef.current.currentTime + 0.8)
+    // Start all oscillators
+    oscillators.forEach(osc => osc.start())
     
-    oscillatorsRef.current[key] = {
-      oscillator,
-      gainNode,
-      startTime: Date.now()
+    if (!shouldHold) {
+      oscillators.forEach(osc => {
+        osc.stop(audioContextRef.current.currentTime + 0.8)
+      })
+      setTimeout(() => {
+        delete oscillatorsRef.current[key]
+      }, 800)
     }
     
-    setTimeout(() => {
-      delete oscillatorsRef.current[key]
-    }, 800)
-  }, [])
+    oscillatorsRef.current[key] = {
+      oscillators,
+      gainNodes,
+      startTime: Date.now()
+    }
+  }, [initAudioContext, volume])
 
   const getContainerPosition = useCallback((e) => {
     const container = e.currentTarget
@@ -388,52 +520,99 @@ export default function Contact({ containerRef }) {
     setIsMouseDown(true)
     const pos = getContainerPosition(e)
     setMousePos(pos)
-    playNote(pos.x, pos.y)
-  }, [getContainerPosition])
+    playNote(pos.x, pos.y, true)
+  }, [getContainerPosition, playNote])
 
   const handleMouseMove = useCallback((e) => {
     const pos = getContainerPosition(e)
     setMousePos(pos)
     if (isMouseDown) {
-      playNote(pos.x, pos.y)
+      playNote(pos.x, pos.y, true)
     }
-  }, [getContainerPosition, isMouseDown])
+  }, [getContainerPosition, isMouseDown, playNote])
 
   const handleMouseUp = useCallback(() => {
     setIsMouseDown(false)
+    // Stop the active note when mouse is released
+    if (oscillatorsRef.current['active'] && audioContextRef.current) {
+      const { oscillators, gainNodes } = oscillatorsRef.current['active']
+      oscillators.forEach((oscillator, index) => {
+        gainNodes[index].gain.exponentialRampToValueAtTime(0.01, audioContextRef.current.currentTime + 0.1)
+        oscillator.stop(audioContextRef.current.currentTime + 0.1)
+        gainNodes[index].disconnect()
+      })
+      delete oscillatorsRef.current['active']
+    }
   }, [])
+
+  // Update volume for all active oscillators when volume changes
+  useEffect(() => {
+    if (!audioContextRef.current) return
+    
+    Object.values(oscillatorsRef.current).forEach(({ oscillators, gainNodes }) => {
+      oscillators.forEach((osc, index) => {
+        if (osc && gainNodes[index]) {
+          const baseVolume = index === 0 ? 0.2 : 0.13
+          const adjustedVolume = baseVolume * volume
+          gainNodes[index].gain.setValueAtTime(adjustedVolume, audioContextRef.current.currentTime)
+        }
+      })
+    })
+  }, [volume])
 
   useEffect(() => {
     const updateCanvasSize = () => {
+      const vw = window.innerWidth / 100
+      const vh = window.innerHeight / 100
+      
       if (freqCanvasRef.current) {
         const canvas = freqCanvasRef.current
-        canvas.width = 75
-        canvas.height = 80
+        const width = Math.max(50, Math.min(75, 8 * vw))
+        const height = Math.max(60, Math.min(80, 8 * vh))
+        canvas.width = width
+        canvas.height = height
       }
       if (waveformCanvasRef.current) {
         const canvas = waveformCanvasRef.current
-        canvas.width = 120
-        canvas.height = 100
+        const width = Math.max(80, Math.min(120, 12 * vw))
+        const height = Math.max(70, Math.min(100, 10 * vh))
+        canvas.width = width
+        canvas.height = height
       }
       if (eqCanvasRef.current) {
         const canvas = eqCanvasRef.current
-        canvas.width = 120
-        canvas.height = 100
+        const width = Math.max(80, Math.min(120, 12 * vw))
+        const height = Math.max(70, Math.min(100, 10 * vh))
+        canvas.width = width
+        canvas.height = height
       }
     }
 
     // Initial setup
     const timer = setTimeout(updateCanvasSize, 100)
     updateCanvasSize()
+    
+    // Update on resize
+    window.addEventListener('resize', updateCanvasSize)
+    
     return () => {
       clearTimeout(timer)
+      window.removeEventListener('resize', updateCanvasSize)
     }
   }, [])
 
   return (
     <section 
       id="contact" 
-      className="h-full px-4 pt-2 pb-4 flex flex-col relative overflow-hidden"
+      className="h-full flex flex-col relative overflow-hidden"
+      style={{ 
+        padding: 'clamp(0.5rem, 1.5vw, 1rem)',
+        paddingTop: 'clamp(0.5rem, 1.5vh, 1rem)',
+        paddingBottom: 'clamp(0.5rem, 1.5vh, 1rem)',
+        minWidth: 0,
+        maxWidth: '100%',
+        minHeight: 0
+      }}
     >
       <div 
         id="contact-visualizer"
@@ -457,21 +636,36 @@ export default function Contact({ containerRef }) {
         <canvas
           ref={freqCanvasRef}
           className="absolute pointer-events-none z-10"
-          style={{ top: '8px', left: '8px', width: '75px', height: '80px' }}
+          style={{ 
+            top: 'clamp(4px, 1vh, 8px)', 
+            left: 'clamp(4px, 1vw, 8px)', 
+            width: 'clamp(50px, 8vw, 75px)', 
+            height: 'clamp(60px, 8vh, 80px)' 
+          }}
         />
         
         {/* Waveform - Top Right */}
         <canvas
           ref={waveformCanvasRef}
           className="absolute pointer-events-none z-10"
-          style={{ top: '8px', right: '8px', width: '120px', height: '100px' }}
+          style={{ 
+            top: 'clamp(4px, 1vh, 8px)', 
+            right: 'clamp(4px, 1vw, 8px)', 
+            width: 'clamp(80px, 12vw, 120px)', 
+            height: 'clamp(70px, 10vh, 100px)' 
+          }}
         />
         
         {/* EQ Bars - Bottom Right */}
         <canvas
           ref={eqCanvasRef}
           className="absolute pointer-events-none z-10"
-          style={{ bottom: '8px', right: '8px', width: '120px', height: '100px' }}
+          style={{ 
+            bottom: 'clamp(4px, 1vh, 8px)', 
+            right: 'clamp(4px, 1vw, 8px)', 
+            width: 'clamp(80px, 12vw, 120px)', 
+            height: 'clamp(70px, 10vh, 100px)' 
+          }}
         />
         
         {mousePos && (
@@ -490,11 +684,45 @@ export default function Contact({ containerRef }) {
             }}
           />
         )}
-        <div className="absolute bottom-2 left-2 z-10 pointer-events-none">
-          <p className="text-xs text-white font-light">
+        <div className="absolute z-10 pointer-events-none" style={{ 
+          bottom: 'clamp(0.25rem, 1vh, 0.5rem)',
+          left: 'clamp(0.25rem, 1vw, 0.5rem)'
+        }}>
+          <p className="text-white font-light" style={{ 
+            fontSize: 'clamp(0.5rem, 1.25vw, 0.75rem)',
+            marginBottom: 'clamp(0.125rem, 0.5vh, 0.25rem)',
+            lineHeight: '1.2'
+          }}>
             click & drag to play
           </p>
         </div>
+      </div>
+      
+      {/* Volume Slider - Outside play area */}
+      <div className="absolute z-30 pointer-events-auto" style={{ 
+        bottom: 'clamp(0.75rem, 2vh, 1.5rem)',
+        left: 'clamp(0.75rem, 2vw, 1.5rem)'
+      }}>
+        <ElasticSlider
+          defaultValue={50}
+          startingValue={0}
+          maxValue={100}
+          isStepped={false}
+          stepSize={1}
+          onChange={(value) => setVolume(value / 100)}
+          className="volume-slider"
+        />
+      </div>
+
+      {/* Drum Pattern Maker - Outside play area */}
+      <div className="absolute z-30 pointer-events-auto" style={{ 
+        bottom: 'clamp(0.75rem, 2vh, 1.5rem)',
+        right: 'clamp(0.75rem, 2vw, 1.5rem)'
+      }}>
+        <DrumPatternMaker
+          audioContext={audioContextRef.current}
+          volume={volume}
+        />
       </div>
     </section>
   )

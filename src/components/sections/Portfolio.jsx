@@ -129,13 +129,20 @@ export default function Portfolio({ containerRef }) {
   const [selectedCategory, setSelectedCategory] = useState('All')
   const [hoveredCategory, setHoveredCategory] = useState(null)
 
-  const filteredWork = selectedCategory === 'All' 
+  const filteredWork = (selectedCategory === 'All' 
     ? workWithThumbnails 
     : workWithThumbnails.filter(item => item.category === selectedCategory)
+  ).sort((a, b) => {
+    // Sort by year (descending - newest first), then by title alphabetically
+    if (parseInt(b.year) !== parseInt(a.year)) {
+      return parseInt(b.year) - parseInt(a.year)
+    }
+    return a.title.localeCompare(b.title)
+  })
 
   return (
-    <section id="portfolio" className="h-full flex flex-col py-4" style={{ paddingLeft: '1rem' }}>
-      <div className="mb-4" style={{ paddingRight: '1rem' }}>
+    <section id="portfolio" className="h-full flex flex-col py-4" style={{ paddingLeft: '1rem', paddingRight: 0, marginRight: 0, width: '100%', boxSizing: 'border-box' }}>
+      <div className="mb-4" style={{ paddingRight: 0 }}>
         <h2 className="text-2xl md:text-3xl font-light text-white mb-3">
           <VariableProximity label="Some stuff I made and played" containerRef={containerRef} radius={90} falloff="gaussian" className="text-2xl md:text-3xl font-light text-white" />
         </h2>
@@ -179,8 +186,8 @@ export default function Portfolio({ containerRef }) {
           />
         </p>
       </div>
-      <div className="overflow-y-auto overflow-x-hidden flex-1" style={{ WebkitOverflowScrolling: 'touch', willChange: 'scroll-position' }}>
-        <div className="grid grid-cols-2 md:grid-cols-3 gap-3 md:gap-4" style={{ paddingRight: '1rem', paddingTop: '1rem', paddingBottom: '1rem' }}>
+      <div className="overflow-y-auto overflow-x-hidden flex-1" style={{ WebkitOverflowScrolling: 'touch', willChange: 'scroll-position', paddingRight: 0, marginRight: 0, scrollbarGutter: 'none', width: '100%', boxSizing: 'border-box' }}>
+        <div className="grid grid-cols-2 md:grid-cols-3 gap-3 md:gap-4" style={{ paddingRight: 0, paddingTop: '1rem', paddingBottom: '1rem', paddingLeft: '1rem', marginRight: 0, width: '100%', boxSizing: 'border-box' }}>
           {filteredWork.map((item, index) => (
             <WorkCard key={index} item={item} index={index} containerRef={containerRef} />
           ))}

@@ -35,21 +35,27 @@ function Home() {
       <div className="pointer-events-auto">
         <Navigation />
       </div>
-      <div className="pointer-events-auto h-full pt-8 relative">
-        <div className="h-full grid grid-cols-12 gap-[min(1rem,2vw)] pl-[min(1.5rem,3vw)] pr-[min(1.5rem,3vw)] pt-[min(1rem,2vh)] pb-0 overflow-hidden" style={{ 
-          height: 'calc(100vh - 4rem)',
-          gridTemplateRows: 'repeat(6, minmax(0, 1fr))'
+      <div className="pointer-events-auto h-full relative flex flex-col" style={{ paddingTop: 'clamp(2rem, 4vh, 4rem)' }}>
+        <div className="flex-1 grid grid-cols-12 overflow-hidden" style={{ 
+          gridTemplateRows: '1.2fr 1fr 1fr',
+          gap: 'clamp(0.625rem, 1.75vw, 1rem)',
+          paddingLeft: 'clamp(1rem, 2.5vw, 1.75rem)',
+          paddingRight: 'clamp(1rem, 2.5vw, 1.75rem)',
+          paddingTop: 'clamp(0.75rem, 2vh, 1.25rem)',
+          paddingBottom: 'clamp(0.75rem, 2vh, 1.25rem)',
+          minWidth: 0,
+          minHeight: 0
         }}>
-          <div className="col-span-12 md:col-span-4 row-start-1 row-span-2 border border-white/30 overflow-y-auto overflow-x-hidden" style={{ minHeight: 0 }}>
+          <div className="col-span-12 md:col-span-4 row-start-1 row-span-1 border border-white/30 overflow-hidden flex" style={{ minHeight: 0, minWidth: 0, maxWidth: '100%', display: 'flex', flexDirection: 'column' }}>
             <Hero containerRef={containerRef} />
           </div>
-          <div className="col-span-12 md:col-span-8 row-start-1 row-span-6 overflow-y-auto overflow-x-hidden border border-white/30" style={{ minHeight: 0 }}>
+          <div className="col-span-12 md:col-span-8 row-start-1 row-span-3 overflow-y-auto overflow-x-hidden border border-white/30" style={{ minHeight: 0, minWidth: 0, maxWidth: '100%', marginRight: 'calc(-1 * clamp(1rem, 2.5vw, 1.75rem))', paddingRight: 0 }}>
             <Portfolio containerRef={containerRef} />
           </div>
-          <div className="col-span-12 md:col-span-4 row-start-3 row-span-2 overflow-y-auto pb-0 border border-white/30" style={{ marginBottom: 0, paddingBottom: 0, minHeight: 0 }}>
+          <div className="col-span-12 md:col-span-4 row-start-2 row-span-1 overflow-hidden border border-white/30 flex" style={{ minHeight: 0, minWidth: 0, maxWidth: '100%', display: 'flex', flexDirection: 'column' }}>
             <About containerRef={containerRef} />
           </div>
-          <div className="col-span-12 md:col-span-4 row-start-5 row-span-2 overflow-y-auto pb-0 border border-white/30" style={{ marginBottom: 0, paddingBottom: 0 }}>
+          <div className="col-span-12 md:col-span-4 row-start-3 row-span-1 overflow-hidden border border-white/30 flex" style={{ minHeight: 0, minWidth: 0, maxWidth: '100%', display: 'flex', flexDirection: 'column' }}>
             <Contact containerRef={containerRef} />
           </div>
         </div>

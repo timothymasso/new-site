@@ -27,6 +27,7 @@ export default function WorkCard({ item, index, containerRef }) {
     <Link
       to={item.path}
       className="group block transition-all duration-300 relative"
+      style={{ minWidth: 0, maxWidth: '100%' }}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
@@ -35,6 +36,8 @@ export default function WorkCard({ item, index, containerRef }) {
         style={{
           transform: isHovered ? 'scale(1.03)' : 'scale(1)',
           transformOrigin: 'center center',
+          minWidth: 0,
+          maxWidth: '100%'
         }}
       >
         <img 
@@ -42,21 +45,30 @@ export default function WorkCard({ item, index, containerRef }) {
           alt={item.title}
           className="w-full h-auto object-cover transition-opacity duration-300"
           style={{
-            opacity: isHovered ? 0.8 : 1
+            opacity: isHovered ? 0.8 : 1,
+            maxWidth: '100%',
+            height: 'auto'
           }}
           onError={handleImageError}
         />
       </div>
-      <div>
-        <h3 className="text-xs md:text-sm font-light text-white mb-1 transition-colors group-hover:text-white/80">
-          <VariableProximity label={item.title} containerRef={containerRef} radius={90} falloff="gaussian" className="text-xs md:text-sm font-light text-white" />
+      <div style={{ minWidth: 0, maxWidth: '100%', overflowWrap: 'break-word' }}>
+        <h3 className="font-light text-white transition-colors group-hover:text-white/80" style={{ 
+          fontSize: 'clamp(0.625rem, 1.5vw, 0.875rem)',
+          marginBottom: 'clamp(0.125rem, 0.5vh, 0.5rem)'
+        }}>
+          <VariableProximity label={item.title} containerRef={containerRef} radius={90} falloff="gaussian" className="font-light text-white" style={{ fontSize: 'clamp(0.625rem, 1.5vw, 0.875rem)' }} />
         </h3>
-        <p className="text-xs text-white/90 font-light">
-          <VariableProximity label={`${item.category}'${item.year.toString().slice(-2)}`} containerRef={containerRef} radius={90} falloff="gaussian" className="text-xs text-white/90 font-light" />
+        <p className="text-white/90 font-light" style={{ fontSize: 'clamp(0.625rem, 1.25vw, 0.75rem)' }}>
+          <VariableProximity label={`${item.category}'${item.year.toString().slice(-2)}`} containerRef={containerRef} radius={90} falloff="gaussian" className="text-white/90 font-light" style={{ fontSize: 'clamp(0.625rem, 1.25vw, 0.75rem)' }} />
         </p>
       </div>
       {isHovered && (
-        <div className="absolute top-2 right-2 text-white/80 text-xs">
+        <div className="absolute text-white/80" style={{ 
+          top: 'clamp(0.25rem, 1vw, 0.5rem)',
+          right: 'clamp(0.25rem, 1vw, 0.5rem)',
+          fontSize: 'clamp(0.625rem, 1.25vw, 0.75rem)'
+        }}>
           →
         </div>
       )}

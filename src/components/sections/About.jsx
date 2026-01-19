@@ -31,28 +31,45 @@ export default function About({ containerRef }) {
   }
 
   return (
-    <section id="about" className="h-full px-3 pt-3 pb-3 relative overflow-hidden flex flex-col" style={{ minHeight: 0 }}>
-      <div className="mb-12">
+    <section id="about" className="h-full relative overflow-hidden flex flex-col" style={{ 
+      minHeight: 0,
+      minWidth: 0,
+      maxWidth: '100%',
+      padding: 'clamp(0.75rem, 2vw, 1.5rem)',
+      paddingTop: 'clamp(0.75rem, 2vh, 1.5rem)',
+      paddingBottom: 'clamp(0.75rem, 2vh, 1.5rem)',
+      overflowWrap: 'break-word',
+      wordWrap: 'break-word',
+      display: 'flex',
+      flexDirection: 'column',
+      justifyContent: 'center'
+    }}>
+      <div style={{ marginBottom: 'clamp(0.5rem, 1.5vh, 1rem)' }}>
         <h2 
-          className="text-xl md:text-2xl font-light text-white mb-3 cursor-pointer hover:text-white/80 transition-colors"
+          className="font-light text-white cursor-pointer hover:text-white/80 transition-colors"
+          style={{ 
+            fontSize: 'clamp(0.875rem, 2vw, 1.5rem)',
+            marginBottom: 'clamp(0.375rem, 1vh, 0.75rem)',
+            lineHeight: '1.2'
+          }}
           onClick={handleTitleClick}
         >
-          <VariableProximity label="About me" containerRef={containerRef} radius={90} falloff="gaussian" className="text-xl md:text-2xl font-light text-white" />
+          <VariableProximity label="About me" containerRef={containerRef} radius={90} falloff="gaussian" className="font-light text-white" style={{ fontSize: 'clamp(0.875rem, 2vw, 1.5rem)' }} />
         </h2>
-        <div className="text-xs md:text-sm text-white font-light leading-relaxed">
+        <div className="text-white font-light leading-relaxed" style={{ fontSize: 'clamp(0.5rem, 1.25vw, 0.875rem)', lineHeight: '1.4' }}>
           <p>
-            <VariableProximity label="Sonic architect and computer guy. I make music, write code, build things, and usually mix it all together." containerRef={containerRef} radius={60} falloff="gaussian" className="text-xs md:text-sm text-white font-light" />
+            <VariableProximity label="Sonic architect and computer guy. I make music, write code, build things, and usually mix it all together." containerRef={containerRef} radius={60} falloff="gaussian" className="text-white font-light" style={{ fontSize: 'clamp(0.5rem, 1.25vw, 0.875rem)' }} />
           </p>
         </div>
       </div>
-      <div className="text-xs md:text-sm text-white font-light">
-        <p className="mb-2">
-          <VariableProximity label="timothy.masso@gmail.com" containerRef={containerRef} radius={60} falloff="gaussian" className="text-xs md:text-sm text-white font-light" />
+      <div className="text-white font-light" style={{ fontSize: 'clamp(0.5rem, 1.25vw, 0.875rem)', lineHeight: '1.4' }}>
+        <p style={{ marginBottom: 'clamp(0.25rem, 0.75vh, 0.5rem)' }}>
+          <VariableProximity label="timothy.masso@gmail.com" containerRef={containerRef} radius={60} falloff="gaussian" className="text-white font-light" style={{ fontSize: 'clamp(0.5rem, 1.25vw, 0.875rem)' }} />
         </p>
-        <p className="mb-3">
-          <VariableProximity label="NYC & Cleveland area" containerRef={containerRef} radius={60} falloff="gaussian" className="text-xs md:text-sm text-white font-light" />
+        <p style={{ marginBottom: 'clamp(0.375rem, 1vh, 0.75rem)' }}>
+          <VariableProximity label="NYC & Cleveland area" containerRef={containerRef} radius={60} falloff="gaussian" className="text-white font-light" style={{ fontSize: 'clamp(0.5rem, 1.25vw, 0.875rem)' }} />
         </p>
-        <div className="flex flex-wrap gap-3">
+        <div className="flex flex-wrap" style={{ gap: 'clamp(0.375rem, 1vw, 0.75rem)' }}>
         {socialLinks.map((link) => (
           <a
             key={link.name}
@@ -65,9 +82,10 @@ export default function About({ containerRef }) {
               animationSpeed={10.5}
               colors={link.colors}
               pauseOnHover={false}
-              className="text-sm font-light"
+              className="font-light"
+              style={{ fontSize: 'clamp(0.625rem, 1.5vw, 0.875rem)' }}
             >
-              <VariableProximity label={link.name} containerRef={containerRef} radius={90} falloff="gaussian" className="text-sm font-light" />
+              <VariableProximity label={link.name} containerRef={containerRef} radius={90} falloff="gaussian" className="font-light" style={{ fontSize: 'clamp(0.625rem, 1.5vw, 0.875rem)' }} />
             </GradientText>
           </a>
         ))}
