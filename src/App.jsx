@@ -13,6 +13,7 @@ import ScrollProgress from './components/ui/ScrollProgress'
 const ProjectPage = lazy(() => import('./components/pages/ProjectPage'))
 const AboutPage = lazy(() => import('./components/pages/AboutPage'))
 const ProjectsPage = lazy(() => import('./components/pages/ProjectsPage'))
+const MusicPage = lazy(() => import('./components/pages/MusicPage'))
 
 const LoadingFallback = () => (
   <div className="min-h-screen flex items-center justify-center">
@@ -37,7 +38,7 @@ function Home() {
       </div>
       <div className="pointer-events-auto h-full relative flex flex-col" style={{ paddingTop: 'clamp(2rem, 4vh, 4rem)' }}>
         <div className="flex-1 grid grid-cols-12 overflow-hidden" style={{ 
-          gridTemplateRows: '1.2fr 1fr 1fr',
+          gridTemplateRows: '1.2fr 2fr',
           gap: 'clamp(0.625rem, 1.75vw, 1rem)',
           paddingLeft: 'clamp(1rem, 2.5vw, 1.75rem)',
           paddingRight: 'clamp(1rem, 2.5vw, 1.75rem)',
@@ -52,11 +53,8 @@ function Home() {
           <div className="col-span-12 md:col-span-8 row-start-1 row-span-3 overflow-y-auto overflow-x-hidden border border-white/30" style={{ minHeight: 0, minWidth: 0, maxWidth: '100%', marginRight: 'calc(-1 * clamp(1rem, 2.5vw, 1.75rem))', paddingRight: 0 }}>
             <Portfolio containerRef={containerRef} />
           </div>
-          <div className="col-span-12 md:col-span-4 row-start-2 row-span-1 overflow-hidden border border-white/30 flex" style={{ minHeight: 0, minWidth: 0, maxWidth: '100%', display: 'flex', flexDirection: 'column' }}>
+          <div className="col-span-12 md:col-span-4 row-start-2 row-span-2 overflow-hidden border border-white/30 flex" style={{ minHeight: 0, minWidth: 0, maxWidth: '100%', display: 'flex', flexDirection: 'column' }}>
             <About containerRef={containerRef} />
-          </div>
-          <div className="col-span-12 md:col-span-4 row-start-3 row-span-1 overflow-hidden border border-white/30 flex" style={{ minHeight: 0, minWidth: 0, maxWidth: '100%', display: 'flex', flexDirection: 'column' }}>
-            <Contact containerRef={containerRef} />
           </div>
         </div>
         <Footer />
@@ -74,6 +72,7 @@ export default function App() {
           <Route path="/" element={<Home />} />
           <Route path="/about" element={<AboutPage />} />
           <Route path="/projects" element={<ProjectsPage />} />
+          <Route path="/music" element={<MusicPage />} />
           <Route path="/performances/:slug" element={<ProjectPage />} />
           <Route path="/projects/:slug" element={<ProjectPage />} />
           <Route path="/compositions/:slug" element={<ProjectPage />} />

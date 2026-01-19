@@ -592,12 +592,21 @@ export default function Contact({ containerRef }) {
     const timer = setTimeout(updateCanvasSize, 100)
     updateCanvasSize()
     
-    // Update on resize
-    window.addEventListener('resize', updateCanvasSize)
+    // Update on resize with debouncing
+    let resizeTimer
+    const handleResize = () => {
+      clearTimeout(resizeTimer)
+      resizeTimer = setTimeout(() => {
+        updateCanvasSize()
+      }, 16) // ~60fps
+    }
+    
+    window.addEventListener('resize', handleResize)
     
     return () => {
       clearTimeout(timer)
-      window.removeEventListener('resize', updateCanvasSize)
+      clearTimeout(resizeTimer)
+      window.removeEventListener('resize', handleResize)
     }
   }, [])
 
@@ -616,14 +625,15 @@ export default function Contact({ containerRef }) {
     >
       <div 
         id="contact-visualizer"
-        className="flex-1 relative cursor-crosshair min-h-0 h-full" 
+        className="flex-1 relative cursor-crosshair min-h-0 h-full w-full" 
         onClick={initAudioContext}
         onMouseDown={handleMouseDown}
         onMouseMove={handleMouseMove}
         onMouseUp={handleMouseUp}
         onMouseLeave={handleMouseUp}
+        style={{ width: '100%', height: '100%' }}
       >
-        <Canvas camera={{ position: [0, 0, 3.5], fov: 60 }}>
+        <Canvas camera={{ position: [0, 0, 3.5], fov: 60 }} style={{ width: '100%', height: '100%' }}>
           <ambientLight intensity={0.5} />
           <pointLight position={[3, 3, 3]} intensity={1} />
           <pointLight position={[-3, -3, -3]} intensity={0.5} />
