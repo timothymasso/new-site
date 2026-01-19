@@ -1,0 +1,142 @@
+.drum-pattern-maker {
+  background: rgba(0, 0, 0, 0.6);
+  border-radius: 12px;
+  padding: 1rem;
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.drum-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.drum-title {
+  color: rgba(255, 255, 255, 0.9);
+  font-size: 0.875rem;
+  font-weight: 500;
+  margin: 0;
+}
+
+.drum-controls {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.drum-play-button,
+.drum-clear-button {
+  background: rgba(51, 77, 255, 0.3);
+  border: 1px solid rgba(51, 77, 255, 0.5);
+  color: rgba(255, 255, 255, 0.9);
+  padding: 0.375rem 0.75rem;
+  border-radius: 6px;
+  font-size: 0.75rem;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.drum-play-button:hover,
+.drum-clear-button:hover {
+  background: rgba(51, 77, 255, 0.5);
+  transform: translateY(-1px);
+}
+
+.drum-clear-button {
+  background: rgba(255, 100, 100, 0.3);
+  border-color: rgba(255, 100, 100, 0.5);
+}
+
+.drum-clear-button:hover {
+  background: rgba(255, 100, 100, 0.5);
+}
+
+.drum-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  position: relative;
+}
+
+.drum-row {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.drum-label {
+  width: 60px;
+  font-size: 0.75rem;
+  font-weight: 500;
+  text-align: right;
+}
+
+.drum-steps {
+  display: flex;
+  gap: 0.25rem;
+  flex: 1;
+  position: relative;
+}
+
+.drum-bar-marker {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 1px;
+  background: rgba(255, 255, 255, 0.3);
+  pointer-events: none;
+  z-index: 1;
+}
+
+/* Bar markers positioned via inline styles in JSX */
+
+.drum-step {
+  flex: 1;
+  aspect-ratio: 1;
+  border: 2px solid;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.1s;
+  min-width: 0;
+  padding: 0;
+  position: relative;
+}
+
+.drum-step::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 6px;
+  height: 6px;
+  background: rgba(255, 255, 255, 0.3);
+  border-radius: 0;
+  transform: translate(-50%, -50%);
+}
+
+.drum-step.active {
+  box-shadow: 0 0 8px currentColor;
+}
+
+.drum-step.active::after {
+  background: rgba(255, 255, 255, 0.9);
+  box-shadow: 0 0 4px rgba(255, 255, 255, 0.8);
+}
+
+.drum-step.playing {
+  animation: pulse 0.2s ease-in-out;
+  transform: scale(1.15);
+}
+
+@keyframes pulse {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.2);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
