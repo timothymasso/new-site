@@ -8,6 +8,7 @@ import Contact from './components/sections/Contact'
 import SocialLinks from './components/ui/SocialLinks'
 import Footer from './components/layout/Footer'
 import ScrollProgress from './components/ui/ScrollProgress'
+import EasterEggManager from './components/ui/EasterEggManager'
 
 // Lazy load route components for code splitting
 const ProjectPage = lazy(() => import('./components/pages/ProjectPage'))
