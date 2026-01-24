@@ -113,7 +113,7 @@ const allWork = [
     year: "2025",
     path: "/projects/prog-logic",
     type: "project",
-    thumbnail: "/assets/tri-c-logo.svg"
+    thumbnail: "/assets/program.png"
   }
 ]
 

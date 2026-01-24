@@ -14,7 +14,7 @@ export default function WorkCard({ item, index, containerRef }) {
     }
     // For Code category, use a code-themed fallback
     if (item.category === 'Code') {
-      return "/assets/type.webp"
+      return "/assets/program.png"
     }
     return item.thumbnail || "/assets/playing.webp"
   }
