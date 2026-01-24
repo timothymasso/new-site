@@ -2,6 +2,13 @@ import React, { useState } from 'react'
 import { Link } from 'react-router-dom'
 import VariableProximity from './VariableProximity'
 
+const base = import.meta.env.BASE_URL || '/'
+const toAsset = (path) => {
+  if (!path || path.startsWith('http')) return path
+  const p = path.startsWith('/') ? path.slice(1) : path
+  return base + p
+}
+
 export default function WorkCard({ item, index, containerRef }) {
   const [isHovered, setIsHovered] = useState(false)
   const [imageError, setImageError] = useState(false)
@@ -9,14 +16,12 @@ export default function WorkCard({ item, index, containerRef }) {
   // Fallback thumbnail if YouTube thumbnail fails
   const getFallbackThumbnail = () => {
     if (item.youtubeId && !imageError) {
-      // Try maxresdefault as fallback
       return `https://img.youtube.com/vi/${item.youtubeId}/maxresdefault.jpg`
     }
-    // For Code category, use a code-themed fallback
     if (item.category === 'Code') {
-      return "/assets/type.webp"
+      return toAsset('/assets/type.webp')
     }
-    return item.thumbnail || "/assets/playing.webp"
+    return toAsset(item.thumbnail || '/assets/playing.webp')
   }
 
   const handleImageError = () => {
@@ -43,7 +48,7 @@ export default function WorkCard({ item, index, containerRef }) {
         }}
       >
         <img 
-          src={imageError ? getFallbackThumbnail() : item.thumbnail} 
+          src={imageError ? getFallbackThumbnail() : toAsset(item.thumbnail)} 
           alt={item.title}
           className="w-full h-full object-cover transition-opacity duration-300"
           style={{
