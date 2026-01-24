@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <title>Internet Geographies Project</title><!-- Begin Jekyll SEO tag v2.8.0 -->
+<meta name="generator" content="Jekyll v3.10.0" />
+<meta property="og:title" content="Internet Geographies Project" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="Timothy Masso’s website" />
+<meta property="og:description" content="Timothy Masso’s website" />
+<link rel="canonical" href="http://localhost:4000/_dataprojects/internetgeo/" />
+<meta property="og:url" content="http://localhost:4000/_dataprojects/internetgeo/" />
+<meta property="og:site_name" content="Timothy Masso" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2024-04-20T00:00:00-04:00" />
+<meta name="twitter:card" content="summary" />
+<meta property="twitter:title" content="Internet Geographies Project" />
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"BlogPosting","dateModified":"2024-04-20T00:00:00-04:00","datePublished":"2024-04-20T00:00:00-04:00","description":"Timothy Masso’s website","headline":"Internet Geographies Project","mainEntityOfPage":{"@type":"WebPage","@id":"http://localhost:4000/_dataprojects/internetgeo/"},"url":"http://localhost:4000/_dataprojects/internetgeo/"}</script>
+<!-- End Jekyll SEO tag -->
+<link type="application/atom+xml" rel="alternate" href="http://localhost:4000/feed.xml" title="Timothy Masso" /><link rel="shortcut icon" type="image/x-icon" href="/assets/favicon.png" />
+  <link rel="stylesheet" href="/assets/css/main.css" />
+</head><body a="auto">
+    <main class="page-content" aria-label="Content">
+      <div class="w">
+        <a href="/">home</a><article>
+  <p class="post-meta">
+    <time datetime="2024-04-20 00:00:00 -0400">2024-04-20</time>
+  </p>
+  
+  <h1>Internet Geographies Project</h1>
+
+  
+<h1 id="project-process">Project Process</h1>
+
+<p><img src="/assets/Project2All/3240.webp" alt="2024 Haneda Airport runway collision" />
+2024 Haneda Airport runway collision</p>
+
+<h1 id="aviation-accidents-data-project">Aviation Accidents Data Project</h1>
+<p><strong>Mapping 40 Years of Commercial Air Crashes</strong> <br />
+<a href="https://github.com/timmasso/Internet-Geo-Project-1-and-2">Code on GitHub</a></p>
+
+<p><a href="https://timothymasso.com/Internet-Geo-Project-1-and-2/PlaneMap.html">Finished Site</a></p>
+
+<h2 id="introduction">Introduction</h2>
+<p>Earlier this year, several major air incidents hit the news, including the Alaskan Airlines flight where a door panel came off mid-flight and the Japan Airlines crash involving a Coast Guard plane. It made me wonder how often serious aviation accidents actually happen.<br />
+The media made it sound like flying had suddenly become dangerous again. I wanted to find out if that was true or if these were rare exceptions in an industry that is generally very safe.<br />
+For this project, I decided to map aviation accidents using historical data. My goal was to visualize more than forty years of incidents and see whether any long-term trends existed in commercial air safety.</p>
+
+<h2 id="getting-the-data">Getting the Data</h2>
+<p>The main data source was the <strong>NTSB’s CAROL database</strong>, which lists every aviation accident in the United States. It’s a detailed resource where you can filter by year, aircraft type, operation category, and other factors.<br />
+Since it was my first time using CAROL, I had to experiment with the search functions and data exports. I eventually learned that scheduled passenger flights fall under <strong>Part 121 operations</strong>, which include airlines like United, Delta, and Alaska.<br />
+I downloaded all Part 121 airplane accidents from <strong>1982 through 2025</strong>, giving me a dataset covering more than forty years of commercial aviation history. I exported the results as a CSV file for further analysis.</p>
+
+<h2 id="whats-in-the-data">What’s in the Data</h2>
+<p>The CSV contained many fields. The most useful were:</p>
+
+<ul>
+  <li>Case number</li>
+  <li>Date and location</li>
+  <li>Injury counts (fatal, serious, minor)</li>
+  <li>Aircraft make and model</li>
+  <li>Airport information</li>
+  <li>Aircraft damage level</li>
+  <li>Weather and probable cause</li>
+</ul>
+
+<p>For this project, I focused on:</p>
+
+<ul>
+  <li>Date (for identifying trends)</li>
+  <li>Coordinates (for mapping)</li>
+  <li>Make and model (to see which manufacturers were most common)</li>
+  <li>Damage level (to filter for serious incidents)</li>
+</ul>
+
+<h2 id="filtering-and-cleaning-the-csv">Filtering and Cleaning the CSV</h2>
+<p>I used <strong>PapaParse</strong>, a JavaScript library for reading and filtering CSV data, inside a Node.js environment.</p>
+
+<p>I wanted to keep only the rows that met these conditions:</p>
+
+<ul>
+  <li>Aircraft made by Boeing, Airbus, Embraer, and other major manufacturers</li>
+  <li>Incidents that occurred in the United States</li>
+  <li>Aircraft listed as <em>Destroyed</em> or having <em>Substantial</em> damage</li>
+</ul>
+
+<p>The filtering function looked like this:</p>
+
+<div class="language-javascript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">function</span> <span class="nx">findRows</span><span class="p">(</span><span class="nx">csvData</span><span class="p">,</span> <span class="nx">makeColumn</span><span class="p">,</span> <span class="nx">targetMakes</span><span class="p">,</span> <span class="nx">damageColumn</span><span class="p">,</span> <span class="nx">targetDamage</span><span class="p">,</span> <span class="nx">countryColumn</span><span class="p">,</span> <span class="nx">targetCountry</span><span class="p">)</span> <span class="p">{</span>
+  <span class="k">return</span> <span class="nx">csvData</span><span class="p">.</span><span class="nx">filter</span><span class="p">((</span><span class="nx">row</span><span class="p">)</span> <span class="o">=&gt;</span>
+    <span class="nx">targetMakes</span><span class="p">.</span><span class="nx">includes</span><span class="p">(</span><span class="nx">row</span><span class="p">[</span><span class="nx">makeColumn</span><span class="p">])</span> <span class="o">&amp;&amp;</span>
+    <span class="nx">targetDamage</span><span class="p">.</span><span class="nx">includes</span><span class="p">(</span><span class="nx">row</span><span class="p">[</span><span class="nx">damageColumn</span><span class="p">])</span> <span class="o">&amp;&amp;</span>
+    <span class="nx">targetCountry</span><span class="p">.</span><span class="nx">includes</span><span class="p">(</span><span class="nx">row</span><span class="p">[</span><span class="nx">countryColumn</span><span class="p">])</span> <span class="o">&amp;&amp;</span>
+    <span class="nx">row</span><span class="p">[</span><span class="dl">"</span><span class="s2">Latitude</span><span class="dl">"</span><span class="p">]</span> <span class="o">!==</span> <span class="dl">""</span> <span class="o">&amp;&amp;</span>
+    <span class="nx">row</span><span class="p">[</span><span class="dl">"</span><span class="s2">Longitude</span><span class="dl">"</span><span class="p">]</span> <span class="o">!==</span> <span class="dl">""</span>
+  <span class="p">);</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>After filtering, I exported the results into a new CSV file. This smaller dataset was ready for mapping.</p>
+
+<h2 id="converting-to-geojson">Converting to GeoJSON</h2>
+<p>The next step was converting the CSV into <strong>GeoJSON</strong>, a format used by mapping libraries such as <strong>Leaflet</strong>.</p>
+
+<p>GeoJSON represents data as geographic features, each with coordinates and custom properties. I started by defining the structure:</p>
+
+<div class="language-javascript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">var</span> <span class="nx">geoJson</span> <span class="o">=</span> <span class="p">{</span>
+  <span class="na">type</span><span class="p">:</span> <span class="dl">"</span><span class="s2">FeatureCollection</span><span class="dl">"</span><span class="p">,</span>
+  <span class="na">name</span><span class="p">:</span> <span class="dl">"</span><span class="s2">CommercialAirCrashes</span><span class="dl">"</span><span class="p">,</span>
+  <span class="na">features</span><span class="p">:</span> <span class="p">[]</span>
+<span class="p">};</span>
+</code></pre></div></div>
+
+<p>Each CSV row is converted to a Feature with properties and Point geometry; example conversion loop:</p>
+
+<div class="language-javascript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">for</span> <span class="p">(</span><span class="kd">let</span> <span class="nx">i</span> <span class="k">in</span> <span class="nx">r</span><span class="p">.</span><span class="nx">data</span><span class="p">)</span> <span class="p">{</span>
+  <span class="kd">var</span> <span class="nx">b</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="na">type</span><span class="p">:</span> <span class="dl">"</span><span class="s2">Feature</span><span class="dl">"</span><span class="p">,</span>
+    <span class="na">properties</span><span class="p">:</span> <span class="p">{</span>
+      <span class="na">NtsbNo</span><span class="p">:</span> <span class="nx">r</span><span class="p">.</span><span class="nx">data</span><span class="p">[</span><span class="nx">i</span><span class="p">].</span><span class="nx">NtsbNo</span><span class="p">,</span>
+      <span class="na">EventDate</span><span class="p">:</span> <span class="nx">r</span><span class="p">.</span><span class="nx">data</span><span class="p">[</span><span class="nx">i</span><span class="p">].</span><span class="nx">EventDate</span><span class="p">,</span>
+      <span class="na">Country</span><span class="p">:</span> <span class="nx">r</span><span class="p">.</span><span class="nx">data</span><span class="p">[</span><span class="nx">i</span><span class="p">].</span><span class="nx">Country</span><span class="p">,</span>
+      <span class="na">City</span><span class="p">:</span> <span class="nx">r</span><span class="p">.</span><span class="nx">data</span><span class="p">[</span><span class="nx">i</span><span class="p">].</span><span class="nx">City</span><span class="p">,</span>
+      <span class="na">State</span><span class="p">:</span> <span class="nx">r</span><span class="p">.</span><span class="nx">data</span><span class="p">[</span><span class="nx">i</span><span class="p">].</span><span class="nx">State</span><span class="p">,</span>
+      <span class="na">AccidentLat</span><span class="p">:</span> <span class="nb">parseFloat</span><span class="p">(</span><span class="nx">r</span><span class="p">.</span><span class="nx">data</span><span class="p">[</span><span class="nx">i</span><span class="p">].</span><span class="nx">Latitude</span><span class="p">),</span>
+      <span class="na">AccidentLong</span><span class="p">:</span> <span class="nb">parseFloat</span><span class="p">(</span><span class="nx">r</span><span class="p">.</span><span class="nx">data</span><span class="p">[</span><span class="nx">i</span><span class="p">].</span><span class="nx">Longitude</span><span class="p">),</span>
+      <span class="na">AirportName</span><span class="p">:</span> <span class="nx">r</span><span class="p">.</span><span class="nx">data</span><span class="p">[</span><span class="nx">i</span><span class="p">].</span><span class="nx">AirportName</span><span class="p">,</span>
+      <span class="na">AirportID</span><span class="p">:</span> <span class="nx">r</span><span class="p">.</span><span class="nx">data</span><span class="p">[</span><span class="nx">i</span><span class="p">].</span><span class="nx">AirportID</span><span class="p">,</span>
+      <span class="na">Registration</span><span class="p">:</span> <span class="nx">r</span><span class="p">.</span><span class="nx">data</span><span class="p">[</span><span class="nx">i</span><span class="p">].</span><span class="nx">N</span><span class="p">,</span>
+      <span class="na">FatalInjuryCount</span><span class="p">:</span> <span class="nx">r</span><span class="p">.</span><span class="nx">data</span><span class="p">[</span><span class="nx">i</span><span class="p">].</span><span class="nx">FatalInjuryCount</span><span class="p">,</span>
+      <span class="na">SeriousInjuryCount</span><span class="p">:</span> <span class="nx">r</span><span class="p">.</span><span class="nx">data</span><span class="p">[</span><span class="nx">i</span><span class="p">].</span><span class="nx">SeriousInjuryCount</span><span class="p">,</span>
+      <span class="na">MinorInjuryCount</span><span class="p">:</span> <span class="nx">r</span><span class="p">.</span><span class="nx">data</span><span class="p">[</span><span class="nx">i</span><span class="p">].</span><span class="nx">MinorInjuryCount</span><span class="p">,</span>
+      <span class="na">AirCarrier</span><span class="p">:</span> <span class="nx">r</span><span class="p">.</span><span class="nx">data</span><span class="p">[</span><span class="nx">i</span><span class="p">].</span><span class="nx">Operator</span><span class="p">,</span>
+      <span class="na">Make</span><span class="p">:</span> <span class="nx">r</span><span class="p">.</span><span class="nx">data</span><span class="p">[</span><span class="nx">i</span><span class="p">].</span><span class="nx">Make</span><span class="p">,</span>
+      <span class="na">Model</span><span class="p">:</span> <span class="nx">r</span><span class="p">.</span><span class="nx">data</span><span class="p">[</span><span class="nx">i</span><span class="p">].</span><span class="nx">Model</span><span class="p">,</span>
+      <span class="na">AirCraftDamage</span><span class="p">:</span> <span class="nx">r</span><span class="p">.</span><span class="nx">data</span><span class="p">[</span><span class="nx">i</span><span class="p">].</span><span class="nx">AirCraftDamage</span><span class="p">,</span>
+      <span class="na">ProbableCause</span><span class="p">:</span> <span class="nx">r</span><span class="p">.</span><span class="nx">data</span><span class="p">[</span><span class="nx">i</span><span class="p">].</span><span class="nx">ProbableCause</span><span class="p">,</span>
+      <span class="na">ObjectId</span><span class="p">:</span> <span class="nb">parseInt</span><span class="p">(</span><span class="nx">i</span><span class="p">)</span>
+    <span class="p">},</span>
+    <span class="na">geometry</span><span class="p">:</span> <span class="p">{</span>
+      <span class="na">type</span><span class="p">:</span> <span class="dl">"</span><span class="s2">Point</span><span class="dl">"</span><span class="p">,</span>
+      <span class="na">coordinates</span><span class="p">:</span> <span class="p">[</span>
+        <span class="nb">parseFloat</span><span class="p">(</span><span class="nx">r</span><span class="p">.</span><span class="nx">data</span><span class="p">[</span><span class="nx">i</span><span class="p">].</span><span class="nx">Longitude</span><span class="p">),</span>
+        <span class="nb">parseFloat</span><span class="p">(</span><span class="nx">r</span><span class="p">.</span><span class="nx">data</span><span class="p">[</span><span class="nx">i</span><span class="p">].</span><span class="nx">Latitude</span><span class="p">)</span>
+      <span class="p">]</span>
+    <span class="p">}</span>
+  <span class="p">};</span>
+  <span class="nx">geoJson</span><span class="p">.</span><span class="nx">features</span><span class="p">.</span><span class="nx">push</span><span class="p">(</span><span class="nx">b</span><span class="p">);</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>Each row of the CSV became a feature in this GeoJSON file, including values such as the aircraft model, damage level, and number of injuries. After populating the data, I saved it as a JSON file.<br />
+A typical entry looked like this:</p>
+
+<p>Example GeoJSON entry (trimmed):</p>
+
+<div class="language-json highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">{</span><span class="w">
+  </span><span class="nl">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"FeatureCollection"</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"features"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
+    </span><span class="p">{</span><span class="w">
+      </span><span class="nl">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Feature"</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"properties"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+        </span><span class="nl">"NtsbNo"</span><span class="p">:</span><span class="w"> </span><span class="s2">"DCA24LA065"</span><span class="p">,</span><span class="w">
+        </span><span class="nl">"EventDate"</span><span class="p">:</span><span class="w"> </span><span class="s2">"2024-01-10"</span><span class="p">,</span><span class="w">
+        </span><span class="nl">"Make"</span><span class="p">:</span><span class="w"> </span><span class="s2">"BOEING"</span><span class="p">,</span><span class="w">
+        </span><span class="nl">"Model"</span><span class="p">:</span><span class="w"> </span><span class="s2">"737"</span><span class="p">,</span><span class="w">
+        </span><span class="nl">"AirCraftDamage"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Substantial"</span><span class="p">,</span><span class="w">
+        </span><span class="nl">"AirCarrier"</span><span class="p">:</span><span class="w"> </span><span class="s2">"UNITED AIRLINES INC"</span><span class="w">
+      </span><span class="p">},</span><span class="w">
+      </span><span class="nl">"geometry"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+        </span><span class="nl">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Point"</span><span class="p">,</span><span class="w">
+        </span><span class="nl">"coordinates"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="mf">-95.34</span><span class="p">,</span><span class="w"> </span><span class="mf">29.99</span><span class="p">]</span><span class="w">
+      </span><span class="p">}</span><span class="w">
+    </span><span class="p">}</span><span class="w">
+  </span><span class="p">]</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre></div></div>
+
+<h2 id="linking-airport-coordinates">Linking Airport Coordinates</h2>
+<p>Once the crash sites were plotted, I wanted to add the coordinates of the <strong>origin airports</strong>.<br />
+To do that, I used a separate CSV of U.S. airport codes that included latitude and longitude. I matched each incident’s airport ID or name to the airport data and added the coordinates.<br />
+Some airport fields were missing or formatted differently, so I added fallback logic, if no airport match was found, the program used the accident coordinates instead.</p>
+
+<h2 id="visualizing-with-leaflet">Visualizing with Leaflet</h2>
+<p>With the GeoJSON ready, I used <strong>Leaflet</strong> to display everything on an interactive map.</p>
+
+<p>I created two marker types:<br />
+✈️ for crash sites<br />
+🗼 for airports</p>
+
+<p>Then I drew red lines connecting each airport to the corresponding accident location.</p>
+
+<p>Here is the minimal Leaflet initialization and marker snippet I used:</p>
+
+<div class="language-javascript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">let</span> <span class="nx">map</span> <span class="o">=</span> <span class="nx">L</span><span class="p">.</span><span class="nx">map</span><span class="p">(</span><span class="dl">"</span><span class="s2">map</span><span class="dl">"</span><span class="p">).</span><span class="nx">setView</span><span class="p">([</span><span class="mi">25</span><span class="p">,</span> <span class="o">-</span><span class="mi">90</span><span class="p">],</span> <span class="mi">4</span><span class="p">);</span>
+<span class="nx">L</span><span class="p">.</span><span class="nx">tileLayer</span><span class="p">(</span><span class="dl">"</span><span class="s2">https://tile.openstreetmap.org/{z}/{x}/{y}.png</span><span class="dl">"</span><span class="p">,</span> <span class="p">{</span> <span class="na">maxZoom</span><span class="p">:</span> <span class="mi">19</span> <span class="p">}).</span><span class="nx">addTo</span><span class="p">(</span><span class="nx">map</span><span class="p">);</span>
+
+<span class="kd">let</span> <span class="nx">crashIcon</span> <span class="o">=</span> <span class="nx">L</span><span class="p">.</span><span class="nx">icon</span><span class="p">({</span> <span class="na">iconUrl</span><span class="p">:</span> <span class="dl">"</span><span class="s2">Assets/airplane.png</span><span class="dl">"</span><span class="p">,</span> <span class="na">iconSize</span><span class="p">:</span> <span class="p">[</span><span class="mi">30</span><span class="p">,</span> <span class="mi">30</span><span class="p">]</span> <span class="p">});</span>
+<span class="kd">let</span> <span class="nx">towerIcon</span> <span class="o">=</span> <span class="nx">L</span><span class="p">.</span><span class="nx">icon</span><span class="p">({</span> <span class="na">iconUrl</span><span class="p">:</span> <span class="dl">"</span><span class="s2">Assets/tower.png</span><span class="dl">"</span><span class="p">,</span> <span class="na">iconSize</span><span class="p">:</span> <span class="p">[</span><span class="mi">30</span><span class="p">,</span> <span class="mi">30</span><span class="p">]</span> <span class="p">});</span>
+
+<span class="nx">L</span><span class="p">.</span><span class="nx">geoJson</span><span class="p">(</span><span class="nx">dataFinal</span><span class="p">,</span> <span class="p">{</span>
+  <span class="na">pointToLayer</span><span class="p">:</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">feature</span><span class="p">,</span> <span class="nx">latlng</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">if</span> <span class="p">(</span><span class="nx">feature</span><span class="p">.</span><span class="nx">geometry</span><span class="p">.</span><span class="nx">coordinates</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">!==</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
+      <span class="k">return</span> <span class="nx">L</span><span class="p">.</span><span class="nx">marker</span><span class="p">(</span><span class="nx">latlng</span><span class="p">,</span> <span class="p">{</span> <span class="na">icon</span><span class="p">:</span> <span class="nx">crashIcon</span> <span class="p">}).</span><span class="nx">bindPopup</span><span class="p">(</span>
+        <span class="s2">`Date: </span><span class="p">${</span><span class="nx">feature</span><span class="p">.</span><span class="nx">properties</span><span class="p">.</span><span class="nx">EventDate</span><span class="p">}</span><span class="s2">&lt;br/&gt;NTSB: </span><span class="p">${</span><span class="nx">feature</span><span class="p">.</span><span class="nx">properties</span><span class="p">.</span><span class="nx">NtsbNo</span><span class="p">}</span><span class="s2">&lt;br/&gt;Make: </span><span class="p">${</span><span class="nx">feature</span><span class="p">.</span><span class="nx">properties</span><span class="p">.</span><span class="nx">Make</span><span class="p">}</span><span class="s2">`</span>
+      <span class="p">);</span>
+    <span class="p">}</span> <span class="k">else</span> <span class="k">return</span> <span class="kc">null</span><span class="p">;</span>
+  <span class="p">}</span>
+<span class="p">}).</span><span class="nx">addTo</span><span class="p">(</span><span class="nx">map</span><span class="p">);</span>
+</code></pre></div></div>
+
+<p>Each marker includes a popup with details such as the date, aircraft type, and number of injuries. A small legend in the corner shows the total number of serious incidents since 1982.<br />
+The layout is simple, but it conveys the information clearly.</p>
+
+<h2 id="kepler-experiments">Kepler Experiments</h2>
+<p>I also imported the dataset into <strong>Kepler.gl</strong>, a browser-based visualization tool. It allowed me to connect accident sites and airports with arcs and overlay heat grids showing where serious incidents occurred most frequently.<br />
+These visualizations made it easy to see patterns, most events happen near airports or along high-traffic routes.</p>
+
+<h2 id="what-the-data-shows">What the Data Shows</h2>
+<p>From 1982 through 2025, the dataset contains <strong>2,529 incidents</strong> involving U.S. commercial airliners. Out of these, <strong>271 were classified as serious</strong>.</p>
+
+<h3 id="key-observations">Key Observations</h3>
+<ul>
+  <li>Serious accidents mostly occur during takeoff, landing, or taxiing.</li>
+  <li>Even when aircraft are heavily damaged, passengers are often unharmed.</li>
+  <li>Considering the number of flights that occur every year, serious accidents are extremely rare.</li>
+  <li>There is some uncertainty about underreporting; minor incidents may go unreported unless the damage is significant.</li>
+</ul>
+
+<p>Still, the general trend is clear: <strong>commercial air travel is remarkably safe</strong>.</p>
+
+<h2 id="closing-thoughts">Closing Thoughts</h2>
+<p>This project started from curiosity about whether the recent aviation headlines pointed to a larger issue. Based on the data, the answer appears to be no. serious incidents are uncommon and have not become more frequent.<br />
+However, there is growing public attention on manufacturing and maintenance practices, which is a good thing. Greater transparency leads to better safety.<br />
+Now that the base dataset and visualization system are complete, future work could include adding international data or creating a <strong>time-lapse view</strong> of incident trends over the decades. The final site has no formatting lol.</p>
+
+<p><a href="https://timothymasso.com/Internet-Geo-Project-1-and-2/PlaneMap.html">Finished Site</a></p>
+
+<style>
+
+body {
+  color: white;
+  font-family: monospace;
+  font-size: 16px;
+  line-height: 1.4;
+  margin: 0;
+  min-height: 100%;
+  overflow-wrap: break-word;
+    text-shadow: 
+  0 0 0 black,
+  1px 0 0 black,
+  -1px 0 0 black,
+  0 1px 0 black,
+  0 -1px 0 black,
+  1px 1px 0 black,
+  -1px -1px 0 black,
+  1px -1px 0 black,
+  -1px 1px 0 black,
+  2px 0 0 black,
+  -2px 0 0 black,
+  0 2px 0 black,
+  0 -2px 0 black;
+}
+
+body {
+    background-image: url('/assets/plane.webp'); 
+    background-size: cover; 
+    background-position: center; 
+    background-attachment: fixed; 
+}
+
+a {
+  color: #5bff32;
+}
+
+
+</style>
+
+<div id="scrollTrack">
+  <div id="verticalScrollProgress"></div>
+</div>
+
+<style>
+#scrollTrack {
+  position: fixed;
+  top: 25%;
+  left: 50%;
+  transform: translateX(-700px);
+  width: 5px;
+  height: 50%;
+  background-color: rgba(255, 255, 255, 0.1);
+  z-index: 9998;
+}
+
+#verticalScrollProgress {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 0%;
+  background-color: #5bff32;
+  z-index: 9999;
+}
+
+</style>
+
+<script>
+window.onscroll = function() {
+  const track = document.getElementById("scrollTrack");
+  const bar = document.getElementById("verticalScrollProgress");
+  
+  const scrollTop = document.documentElement.scrollTop || document.body.scrollTop;
+  const scrollHeight = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+  const scrollPercent = (scrollTop / scrollHeight) * 100;
+  
+  // Keep the green bar inside the track
+  bar.style.height = scrollPercent + "%";
+};
+</script>
+
+
+</article>
+      </div>
+    </main>
+  </body>
+</html>

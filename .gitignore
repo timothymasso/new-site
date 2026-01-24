@@ -11,6 +11,10 @@ dist/
 build/
 *.local
 
+# GitHub Pages build output (uncomment if you want to commit built files manually)
+# docs/
+# !docs/.nojekyll
+
 # Environment variables
 .env
 .env.local

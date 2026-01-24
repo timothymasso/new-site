@@ -37,17 +37,20 @@ export default function WorkCard({ item, index, containerRef }) {
           transform: isHovered ? 'scale(1.03)' : 'scale(1)',
           transformOrigin: 'center center',
           minWidth: 0,
-          maxWidth: '100%'
+          maxWidth: '100%',
+          aspectRatio: '16 / 9',
+          position: 'relative'
         }}
       >
         <img 
           src={imageError ? getFallbackThumbnail() : item.thumbnail} 
           alt={item.title}
-          className="w-full h-auto object-cover transition-opacity duration-300"
+          className="w-full h-full object-cover transition-opacity duration-300"
           style={{
             opacity: isHovered ? 0.8 : 1,
-            maxWidth: '100%',
-            height: 'auto'
+            width: '100%',
+            height: '100%',
+            objectFit: 'cover'
           }}
           onError={handleImageError}
         />
