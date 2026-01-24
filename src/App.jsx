@@ -65,8 +65,11 @@ function Home() {
 }
 
 export default function App() {
+  // Get base path from Vite's import.meta.env.BASE_URL or default to '/'
+  const basename = import.meta.env.BASE_URL || '/'
+  
   return (
-    <BrowserRouter>
+    <BrowserRouter basename={basename}>
       <Suspense fallback={<LoadingFallback />}>
         <Routes>
           <Route path="/" element={<Home />} />
