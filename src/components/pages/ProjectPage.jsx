@@ -5,22 +5,22 @@ import Navigation from '../layout/Navigation'
 import Footer from '../layout/Footer'
 import VariableProximity from '../ui/VariableProximity'
 
-// Map of routes to their original HTML content paths
+// Map of routes to their original HTML content paths (relative to BASE_URL)
 const routeToContentMap = {
-  'new-school-recital': '/content/_performances/new-school-recital/',
-  'radiohead-ensemble': '/content/_performances/Radio-Head-Ensemble/',
-  'improv-ensemble-fall-2023': '/content/_performances/improv_ensemble_fall23/',
-  'mingus': '/content/_performances/mingus/',
-  'steely-dan': '/content/_performances/steelydan/',
-  'julius-hemphil': '/content/_performances/juliushemphil/',
-  'afro-cuban': '/content/_performances/afrocuban/',
-  'kennedy-dream': '/content/_performances/kdream/',
-  'unsilent': '/content/_performances/unsilent/',
-  'calc-project': '/content/_dataprojects/calcproject/',
-  'prog-logic': '/content/_dataprojects/proglogic/',
-  'internet-geographies': '/content/_dataprojects/internetgeo/',
-  'stats-one': '/content/_dataprojects/statsone/',
-  'milestones': '/content/_compositions/miles/',
+  'new-school-recital': 'content/_performances/new-school-recital/',
+  'radiohead-ensemble': 'content/_performances/Radio-Head-Ensemble/',
+  'improv-ensemble-fall-2023': 'content/_performances/improv_ensemble_fall23/',
+  'mingus': 'content/_performances/mingus/',
+  'steely-dan': 'content/_performances/steelydan/',
+  'julius-hemphil': 'content/_performances/juliushemphil/',
+  'afro-cuban': 'content/_performances/afrocuban/',
+  'kennedy-dream': 'content/_performances/kdream/',
+  'unsilent': 'content/_performances/unsilent/',
+  'calc-project': 'content/_dataprojects/calcproject/',
+  'prog-logic': 'content/_dataprojects/proglogic/',
+  'internet-geographies': 'content/_dataprojects/internetgeo/',
+  'stats-one': 'content/_dataprojects/statsone/',
+  'milestones': 'content/_compositions/miles/',
 }
 
 export default function ProjectPage() {
@@ -33,16 +33,19 @@ export default function ProjectPage() {
   const contentRef = useRef(null)
 
   useEffect(() => {
+    // Get base URL for proper path resolution (e.g., '/new-site/' on GitHub Pages, '/' locally)
+    const base = import.meta.env.BASE_URL || '/'
+
     // Determine the route key
     const routeKey = slug || category
-    
+
     // Get the original HTML path
     const originalPath = routeToContentMap[routeKey]
-    
+
     if (originalPath) {
       // Fetch the HTML content - ensure index.html is included
       const fetchPath = originalPath.endsWith('/') ? originalPath + 'index.html' : originalPath
-      fetch(fetchPath)
+      fetch(base + fetchPath)
         .then(res => {
           if (!res.ok) {
             throw new Error(`Failed to load: ${res.status} ${res.statusText}`)
@@ -55,27 +58,27 @@ export default function ProjectPage() {
           const doc = parser.parseFromString(html, 'text/html')
           const article = doc.querySelector('article')
           const pageTitle = doc.querySelector('h1')?.textContent || doc.title
-          
+
           if (article) {
             // Clean up the content
             const cleanArticle = article.cloneNode(true)
-            
+
             // Remove script tags
             const scripts = cleanArticle.querySelectorAll('script')
             scripts.forEach(s => s.remove())
-            
+
             // Remove scrollTrack element (old scrollbar indicator)
             const scrollTrack = cleanArticle.querySelector('#scrollTrack')
             if (scrollTrack) {
               scrollTrack.remove()
             }
-            
+
             // Process styles - remove all styles
             const styles = cleanArticle.querySelectorAll('style')
             styles.forEach(s => {
               s.remove()
             })
-            
+
             // Update image sources to use absolute paths
             const images = cleanArticle.querySelectorAll('img')
             const basePath = fetchPath.replace('/index.html', '')
@@ -87,7 +90,7 @@ export default function ProjectPage() {
                 img.setAttribute('src', src.replace('http://localhost:4000', ''))
               }
             })
-            
+
             // Update iframe sources
             const iframes = cleanArticle.querySelectorAll('iframe')
             iframes.forEach(iframe => {
@@ -96,21 +99,21 @@ export default function ProjectPage() {
                 iframe.setAttribute('src', src.replace('http://localhost:4000', ''))
               }
             })
-            
+
             // Process text nodes to add VariableProximity data attributes
             const textElements = cleanArticle.querySelectorAll('h1, h2, h3, h4, h5, h6, p, li, td, th, blockquote, a, span:not([class*="code"]):not([class*="pre"])')
             textElements.forEach(el => {
               // Skip if element contains code or pre elements
               if (el.querySelector('code, pre')) return
-              
+
               // Skip if element is empty or only whitespace
               if (!el.textContent || !el.textContent.trim()) return
-              
+
               // Add data attribute to mark for VariableProximity
               el.setAttribute('data-variable-proximity', 'true')
               el.setAttribute('data-text-content', el.textContent.trim())
             })
-            
+
             setContent(cleanArticle.innerHTML)
             setTitle(pageTitle)
           } else {
@@ -134,34 +137,34 @@ export default function ProjectPage() {
     if (!content || !contentRef.current) return
 
     const elements = contentRef.current.querySelectorAll('[data-variable-proximity="true"]')
-    
+
     elements.forEach(el => {
       const textContent = el.getAttribute('data-text-content')
       if (!textContent) return
-      
+
       // Skip if already processed
       if (el.hasAttribute('data-proximity-processed')) return
-      
+
       // Store original content and clear
       const originalHTML = el.innerHTML
       const classes = el.className
-      
+
       // Create a container for the VariableProximity component
       const container = document.createElement('span')
       container.style.display = 'inline'
-      
+
       // Create root and render VariableProximity
       const root = createRoot(container)
       root.render(
-        <VariableProximity 
-          label={textContent} 
-          containerRef={containerRef} 
-          radius={90} 
-          falloff="gaussian" 
+        <VariableProximity
+          label={textContent}
+          containerRef={containerRef}
+          radius={90}
+          falloff="gaussian"
           className={classes}
         />
       )
-      
+
       // Replace element's content
       el.innerHTML = ''
       el.appendChild(container)
@@ -189,7 +192,7 @@ export default function ProjectPage() {
       </div>
       <div className="pointer-events-auto">
         <div className="max-w-6xl mx-auto px-6 md:px-12 py-12 md:py-20 pt-24 md:pt-28">
-          <article 
+          <article
             ref={contentRef}
             className="project-content"
             dangerouslySetInnerHTML={{ __html: content }}
