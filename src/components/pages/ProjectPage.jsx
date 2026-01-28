@@ -4,6 +4,8 @@ import { useParams, useNavigate } from 'react-router-dom'
 import Navigation from '../layout/Navigation'
 import Footer from '../layout/Footer'
 import VariableProximity from '../ui/VariableProximity'
+import StickyVideoPlayer from '../ui/StickyVideoPlayer'
+import ImageLightbox from '../ui/ImageLightbox'
 
 // Map of routes to their original HTML content paths (relative to BASE_URL)
 const routeToContentMap = {
@@ -91,12 +93,20 @@ export default function ProjectPage() {
               }
             })
 
-            // Update iframe sources
+            // Update iframe sources and mark YouTube videos for sticky player
             const iframes = cleanArticle.querySelectorAll('iframe')
+            let firstYouTubeFound = false
             iframes.forEach(iframe => {
               const src = iframe.getAttribute('src')
               if (src && src.startsWith('http://localhost:4000')) {
                 iframe.setAttribute('src', src.replace('http://localhost:4000', ''))
+              }
+
+              // Mark the first YouTube iframe for sticky video player replacement
+              if (!firstYouTubeFound && src && (src.includes('youtube.com') || src.includes('youtu.be'))) {
+                iframe.setAttribute('data-sticky-video', src)
+                iframe.setAttribute('data-sticky-video-placeholder', 'true')
+                firstYouTubeFound = true
               }
             })
 
@@ -170,6 +180,41 @@ export default function ProjectPage() {
       el.appendChild(container)
       el.setAttribute('data-proximity-processed', 'true')
     })
+
+    // Replace YouTube iframes with StickyVideoPlayer component
+    const stickyVideoPlaceholders = contentRef.current.querySelectorAll('[data-sticky-video-placeholder=\"true\"]')
+
+    stickyVideoPlaceholders.forEach(placeholder => {
+      // Skip if already processed
+      if (placeholder.hasAttribute('data-sticky-processed')) return
+
+      const videoUrl = placeholder.getAttribute('data-sticky-video')
+      if (!videoUrl) return
+
+      // Create a container div to replace the iframe
+      const container = document.createElement('div')
+      container.className = 'sticky-video-container'
+
+      // Replace the iframe's parent div (which has the aspect ratio wrapper)
+      const parentDiv = placeholder.closest('div')
+      if (parentDiv && parentDiv.style.position === 'relative') {
+        parentDiv.parentNode.replaceChild(container, parentDiv)
+      } else {
+        placeholder.parentNode.replaceChild(container, placeholder)
+      }
+
+      // Create root and render StickyVideoPlayer
+      const root = createRoot(container)
+      root.render(
+        <StickyVideoPlayer
+          videoUrl={videoUrl}
+          scrollThreshold={300}
+        />
+      )
+
+      // Mark as processed
+      container.setAttribute('data-sticky-processed', 'true')
+    })
   }, [content])
 
   if (loading) {
@@ -191,7 +236,7 @@ export default function ProjectPage() {
         <Navigation />
       </div>
       <div className="pointer-events-auto">
-        <div className="max-w-6xl mx-auto px-6 md:px-12 py-12 md:py-20 pt-24 md:pt-28">
+        <div className="project-container max-w-6xl mx-auto px-6 md:px-12 py-12 md:py-20 pt-24 md:pt-28">
           <article
             ref={contentRef}
             className="project-content"
@@ -534,6 +579,7 @@ export default function ProjectPage() {
         </div>
         <Footer />
       </div>
+      <ImageLightbox />
     </div>
   )
 }
